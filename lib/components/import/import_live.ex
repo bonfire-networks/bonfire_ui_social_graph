@@ -1,7 +1,7 @@
 defmodule Bonfire.UI.Social.Graph.ImportLive do
   use Bonfire.UI.Common.Web, :stateful_component
 
-  prop selected_tab, :string
+  prop selected_tab, :any
 
   def update(assigns, socket) do
     {:ok,
