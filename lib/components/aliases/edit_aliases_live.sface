@@ -16,24 +16,33 @@
     </div>
     <div x-show="open" x-cloak x-collapse>
       <div class="form-control  mt-4 w-full">
-        {#if Bonfire.Social.Graph.Aliases.list_my_aliases(current_user(@__context__))
-          |> e(:edges, [])
-          |> length() >
-            0}
+        {#if @aliases != []}
           <div class="text-sm">{l("Existing aliases")}</div>
           <ul class="mt-3 flex flex-col gap-2 p-3 border rounded-box border-base-content/20 divide-y divide-base-content/20">
-            <li :for={al <-
-              Bonfire.Social.Graph.Aliases.list_my_aliases(current_user(@__context__))
-              |> e(:edges, [])
-              |> debug("list_my_aliases")}>
+            <li :for={%{edge: %{object: %{id: id, profile: profile, character: %{id: _} = character}}} <- @aliases}>
               <StatelessComponent
                 module={maybe_component(Bonfire.UI.Me.ProfileItemLive)}
                 show_controls={[]}
-                character={e(al, :edge, :object, :character, nil) |> debug("my_aliasss")}
-                profile={e(al, :edge, :object, :profile, nil)}
+                character={character}
+                profile={profile}
                 class="btn btn-circle btn-ghost btn-sm"
                 avatar_class="w-10 h-10 bg-base-300 rounded-full"
               />
+              <button
+                phx-click="Bonfire.Social.Graph.Aliases:remove_alias"
+                phx-value-object={id}
+                type="button"
+                class="btn btn-error"
+              >x</button>
+            </li>
+            <li :for={%{edge: %{object: %{id: id, media_type: type, path: path}}} <- @aliases}>
+              {type}: {path}
+              <button
+                phx-click="Bonfire.Social.Graph.Aliases:remove_alias"
+                phx-value-object={id}
+                type="button"
+                class="btn btn-error"
+              >x</button>
             </li>
           </ul>
         {#else}
@@ -48,6 +57,14 @@
         <input name="actor" type="text" placeholder="Type here" class="input input-bordered w-full">
 
         <button class="w-full rounded-full btn btn-primary mt-4">{l("Add alias")}</button>
+      </div>
+
+      <div class="form-control mt-6 w-full">
+        <div class="text-sm">{l("Add an external account")}</div>
+        <StatelessComponent
+          module={maybe_component(Bonfire.OpenID.Web.SignInWithExternalProvidersLive)}
+          label=""
+        />
       </div>
     </div>
   </div>

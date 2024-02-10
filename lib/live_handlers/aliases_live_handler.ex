@@ -45,6 +45,17 @@ defmodule Bonfire.Social.Graph.Aliases.LiveHandler do
     )
   end
 
+  def handle_event("remove_alias", %{"object" => id} = params, socket) do
+    with {:ok, _added} <- Bonfire.Social.Graph.Aliases.remove(current_user_required!(socket), id) do
+      {
+        :noreply,
+        socket
+        |> assign_flash(:info, params["ok_msg"] || l("Removed the alias!"))
+        |> redirect_to(current_url(socket))
+      }
+    end
+  end
+
   def handle_event("move_away", %{"user" => target, "password" => password}, socket) do
     current_user = current_user_auth!(socket, password)
 
