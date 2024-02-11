@@ -1,27 +1,21 @@
 <form phx-submit="Bonfire.Social.Graph.Aliases:add_alias">
-  <div x-data="{open: false}" class="p-4 border-t border-base-content/20">
-    <div x-on:click="open = !open" class="flex items-center gap-4 justify-between cursor-pointer">
+  <div class="p-4 border-t border-base-content/20">
+    <div class="flex items-center gap-4 justify-between">
       <div class="flex flex-col gap-1">
         <div class="font-bold">{l("Other profiles")}</div>
         <div class="text-sm font-light text-base-content/70">{l(
             "You can indicate your different profiles across the fediverse (including on other apps like Peertube, Pixelfed or Mobilizon)"
           )}</div>
       </div>
-      <button type="button" x-cloak class="btn btn-circle btn-sm btn-ghost" x-show="open">
-        <#Icon iconify="fluent:triangle-down-12-filled" class="w-3 h-3 text-base-content/70" />
-      </button>
-      <button type="button" class="btn btn-circle btn-sm btn-ghost" x-show="!open">
-        <#Icon iconify="fluent:triangle-right-12-filled" class="w-3 h-3 text-base-content/70" />
-      </button>
     </div>
-    <div x-show="open" x-cloak x-collapse>
-      <div class="form-control  mt-4 w-full">
+    <div>
+      <div class="form-control bg-base-300 rounded-box mt-4 w-full">
         {#if @aliases != []}
-          <div class="text-sm">{l("Existing aliases")}</div>
-          <ul class="mt-3 flex flex-col gap-2 p-3 border rounded-box border-base-content/20 divide-y divide-base-content/20">
+          <!-- <div class="text-sm">{l("Existing aliases")}</div> -->
+          <ul class="flex flex-col divide-y divide-base-content/10">
             <li
+              class="flex p-3 items-center justify-between"
               :for={%{edge: %{object: %{id: id, profile: profile, character: %{id: _} = character}}} <- @aliases}
-              class="flex gap-3"
             >
               <StatelessComponent
                 module={maybe_component(Bonfire.UI.Me.ProfileItemLive)}
@@ -29,50 +23,53 @@
                 character={character}
                 profile={profile}
                 class="btn btn-circle btn-ghost btn-sm"
-                avatar_class="w-10 h-10 bg-base-300 rounded-full"
+                avatar_class="w-11 h-11 bg-base-300"
               />
               <button
                 phx-click="Bonfire.Social.Graph.Aliases:remove_alias"
                 phx-value-object={id}
                 type="button"
-                class="btn btn-error"
-              >x</button>
+                class="btn btn-sm btn-circle !border-error/30 btn-outline btn-error"
+              >
+                <#Icon iconify="ph:trash-fill" class="w-4 h-4" /></button>
             </li>
             <li
               :for={%{edge: %{object: %{id: id, media_type: type, path: path}}} <- @aliases}
-              class="flex gap-3"
+              class="flex p-3 items-center justify-between"
             >
               <!-- {type}: {path} -->
               <StatelessComponent
                 module={maybe_component(Bonfire.UI.Me.ProfileLinkLive)}
                 href={path}
                 text={type |> to_string() |> :string.titlecase()}
-                class="flex items-center gap-3"
+                class="flex flex-col gap-1"
               />
+
               <button
                 phx-click="Bonfire.Social.Graph.Aliases:remove_alias"
                 phx-value-object={id}
                 type="button"
-                class="btn btn-error"
-              >x</button>
+                class="btn btn-sm btn-circle !border-error/30 btn-outline btn-error"
+              ><#Icon iconify="ph:trash-fill" class="w-4 h-4" /></button>
             </li>
           </ul>
         {#else}
           <div class="text-warning bg-warning/10 border-warning/30 border rounded p-2 px-4 text-sm font-medium">{l("You don't have any alias yet")}</div>
         {/if}
+        <div class="form-control border-t border-base-content/20 p-3 w-full">
+          <div class="text-sm">{l("Add an alias")}</div>
+          <label class="label pt-0 px-0">
+            <span class="label-text text-base-content/70">{markdown(l("Specify the *@username@domain.com* of the account"))}</span>
+          </label>
+          <div class="flex items-center gap-2">
+            <input name="actor" type="text" placeholder="Type here" class="input input-bordered w-full">
+            <button class="rounded-full btn-outline btn btn-primary !border-primary/30">{l("Add alias")}</button>
+          </div>
+        </div>
       </div>
-      <div class="form-control mt-6 w-full">
-        <div class="text-sm">{l("Add an alias")}</div>
-        <label class="label px-0">
-          <span class="label-text text-base-content/70">{markdown(l("Specify the *@username@domain.com* of the account"))}</span>
-        </label>
-        <input name="actor" type="text" placeholder="Type here" class="input input-bordered w-full">
-
-        <button class="w-full rounded-full btn btn-primary mt-4">{l("Add alias")}</button>
-      </div>
 
       <div class="form-control mt-6 w-full">
-        <div class="text-sm">{l("Add an external account")}</div>
+        <div class="font-bold mb-4">{l("Add an external account")}</div>
         <StatelessComponent
           module={maybe_component(Bonfire.OpenID.Web.SignInWithExternalProvidersLive)}
           label=""
