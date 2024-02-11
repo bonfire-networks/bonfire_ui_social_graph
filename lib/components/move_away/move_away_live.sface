@@ -46,21 +46,24 @@
         {#match aliases}
           <div class="label-text">{l("You can migrate to one of your existing aliases, or enter a new one below")}</div>
           <ul>
-            <li :for={%{edge: %{object: al}} <- aliases} class="flex items-center justify-between">
+            <li
+              :for={%{edge: %{object: %{id: id, profile: profile, character: %{id: _} = character}}} <- aliases}
+              class="flex items-center justify-between"
+            >
               <StatelessComponent
                 module={maybe_component(Bonfire.UI.Me.ProfileItemLive)}
                 show_controls={[]}
-                character={e(al, :character, nil)}
-                profile={e(al, :profile, nil)}
+                character={character}
+                profile={profile}
                 class="btn btn-square btn-ghost btn-sm"
                 avatar_class="w-10 h-10 rounded-full"
               />
               <Bonfire.UI.Common.OpenModalLive
                 id={Text.random_string()}
-                title_text={l("Migrate followers to") <> " " <> e(al, :character, :username, nil)}
+                title_text={l("Migrate followers to") <> " " <> (e(character, :username, nil) || e(profile, :name, ""))}
                 form_opts={%{"phx-submit" => "Bonfire.Me.Profiles:move_away"}}
               >
-                <input name="user" value={id(al)} type="hidden">
+                <input name="user" value={id} type="hidden">
 
                 <div class="text-base mt-5 font-medium">{l("Enter password to confirm")}</div>
                 <label class="label">
@@ -83,7 +86,7 @@
 
                 <:action_btns>
                   <button class="normal-case rounded btn btn-error btn-sm">
-                    <span class="truncate ellipsis">{l("Migrate to %{username} now", username: e(al, :character, :username, nil))}</span>
+                    <span class="truncate ellipsis">{l("Migrate to %{username} now", username: e(character, :username, nil) || e(profile, :name, ""))}</span>
                   </button>
                 </:action_btns>
               </Bonfire.UI.Common.OpenModalLive>

@@ -4,7 +4,7 @@
       <div class="flex flex-col gap-1">
         <div class="font-bold">{l("Other profiles")}</div>
         <div class="text-sm font-light text-base-content/70">{l(
-            "You can indicate your different profiles across the fediverse (including on other apps like Peertube, Pixelfed or Mobilizon)"
+            "You can indicate your different profiles across the fediverse (including on other apps like Peertube, Pixelfed or Mobilizon), or your personal website, blogs, etc"
           )}</div>
       </div>
     </div>
@@ -59,7 +59,7 @@
         <div class="form-control border-t border-base-content/20 p-3 w-full">
           <div class="text-sm">{l("Add an alias")}</div>
           <label class="label pt-0 px-0">
-            <span class="label-text text-base-content/70">{markdown(l("Specify the *@username@domain.com* of the account"))}</span>
+            <span class="label-text text-base-content/70">{markdown(l("Specify the *@username@domain.com* of the account, or paste a URL"))}</span>
           </label>
           <div class="flex items-center gap-2">
             <input name="actor" type="text" placeholder="Type here" class="input input-bordered w-full">
