@@ -56,16 +56,6 @@
         {#else}
           <div class="text-warning bg-warning/10 border-warning/30 border rounded p-2 px-4 text-sm font-medium">{l("You don't have any alias yet")}</div>
         {/if}
-        <div class="form-control border-t border-base-content/20 p-3 w-full">
-          <div class="text-sm">{l("Add an alias")}</div>
-          <label class="label pt-0 px-0">
-            <span class="label-text text-base-content/70">{markdown(l("Specify the *@username@domain.com* of the account, or paste a URL"))}</span>
-          </label>
-          <div class="flex items-center gap-2">
-            <input name="actor" type="text" placeholder="Type here" class="input input-bordered w-full">
-            <button class="rounded-full btn-outline btn btn-primary !border-primary/30">{l("Add alias")}</button>
-          </div>
-        </div>
       </div>
 
       <div class="form-control mt-6 w-full">
@@ -74,6 +64,16 @@
           module={maybe_component(Bonfire.OpenID.Web.SignInWithExternalProvidersLive)}
           label=""
         />
+        <div class="form-control p-3 w-full">
+          <!-- <div class="text-sm">{l("Add an alias")}</div> -->
+          <label class="label pt-0 px-0">
+            <span class="label-text text-base-content/70">{markdown(l("Specify the *@username@domain.com* of the account, or paste a URL"))}</span>
+          </label>
+          <div class="flex items-center gap-2">
+            <input name="actor" type="text" placeholder="Type here" class="input input-bordered w-full">
+            <button class="rounded-full btn-outline btn btn-primary !border-primary/30">{l("Add alias")}</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
