@@ -21,11 +21,11 @@ defmodule Bonfire.UI.Social.Graph.ImportLive do
      )}
   end
 
-  def do_handle_event("validate", _params, socket) do
+  def handle_event("validate", _params, socket) do
     {:noreply, socket}
   end
 
-  def do_handle_event("import", %{"type" => type} = _params, socket) do
+  def handle_event("import", %{"type" => type} = _params, socket) do
     case uploaded_entries(socket, :file) do
       {[_ | _] = entries, []} ->
         with [%{ok: queued}] <-
@@ -72,18 +72,4 @@ defmodule Bonfire.UI.Social.Graph.ImportLive do
   #         __MODULE__,
   #         Bonfire.Files.LiveHandler
   #       )
-
-  def handle_event(
-        action,
-        attrs,
-        socket
-      ),
-      do:
-        Bonfire.UI.Common.LiveHandlers.handle_event(
-          action,
-          attrs,
-          socket,
-          __MODULE__,
-          &do_handle_event/3
-        )
 end
