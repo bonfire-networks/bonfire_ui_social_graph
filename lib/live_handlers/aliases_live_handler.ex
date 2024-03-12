@@ -18,7 +18,10 @@ defmodule Bonfire.Social.Graph.Aliases.LiveHandler do
   end
 
   def handle_event("add_alias", %{"actor" => actor} = params, socket) do
-    with {:ok, _added} <- Bonfire.Social.Graph.Aliases.add(current_user_required!(socket), actor) do
+    with {:ok, _added} <-
+           Bonfire.Social.Graph.Aliases.add(current_user_required!(socket), actor,
+             update_existing: :force
+           ) do
       {
         :noreply,
         socket
