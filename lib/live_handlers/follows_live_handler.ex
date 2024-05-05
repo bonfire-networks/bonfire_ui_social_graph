@@ -120,8 +120,8 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
     list_of_components
     |> Map.new(fn component ->
       disable? =
-        (Bonfire.Social.Integration.is_local?(component.object) == false and
-           !Bonfire.Social.Integration.federating?(current_user))
+        (Bonfire.Social.is_local?(component.object) == false and
+           !Bonfire.Social.federating?(current_user))
         |> debug("disable follow?")
 
       {component.component_id,
