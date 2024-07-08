@@ -22,9 +22,9 @@ defmodule Bonfire.UI.Social.Graph.RuntimeConfig do
           requested: Bonfire.UI.Social.Graph.ProfileFollowsLive,
           requests: Bonfire.UI.Social.Graph.ProfileFollowsLive
         ],
-        navigation: [
-          followed: l("Network")
-        ],
+        # navigation: [
+        #   followed: l("Network")
+        # ],
         network: [
           followers: l("Followers"),
           followed: l("Followed")
