@@ -1,6 +1,6 @@
 defmodule Bonfire.Social.Graph.Aliases.LiveHandler do
   use Bonfire.UI.Common.Web, :live_handler
-  import Untangle
+  # import Untangle
   # alias Bonfire.Boundaries.Circles
 
   def handle_event("move_in", %{"actor" => actor}, socket) do
