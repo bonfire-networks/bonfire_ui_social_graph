@@ -105,7 +105,7 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
     my_requests =
       if current_user,
         do:
-          Bonfire.Social.Graph.Requests.get!(
+          Bonfire.Social.Requests.get!(
             current_user,
             Bonfire.Data.Social.Follow,
             remaining_ids,
