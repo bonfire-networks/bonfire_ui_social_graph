@@ -1,5 +1,5 @@
 <div
-  class="flex items-center gap-2 w-full lg:w-auto"
+  class="flex items-center gap-2 w-full"
   x-data={"{text: '#{@verb_already || l("Following")}'}"}
   title={@title}
 >
@@ -17,7 +17,7 @@
       phx-disable-with={l("loading...")}
       phx-value-id={@object_id}
       class={
-        e(@class, "btn btn-sm  flex-1 border-base-content/40 normal-case"),
+        e(@class, "btn btn-sm flex-1 btn-neutral"),
         "btn-disabled": @disabled
       }
     >
@@ -28,7 +28,7 @@
       </div>
     </a>
   {#elseif @my_follow == :requested}
-    <span class="w-full" x-data={"{text: '#{l("Requested")}'}"}>
+    <span class="w-full flex-1" x-data={"{text: '#{l("Requested")}'}"}>
       <a
         x-on:mouseover={"text = '#{l("Cancel")}'"}
         x-on:mouseover.away={"text = '#{l("Requested")}'"}
@@ -49,7 +49,7 @@
       </a>
     </span>
   {#else}
-    <span class="w-full">
+    <span class="w-full flex-1">
       <a
         phx-disable-with={l("loading...")}
         x-on:mouseover={"text = '#{@verb_undo || l("Unfollow")}'"}
@@ -61,7 +61,7 @@
         phx-value-id={@object_id}
         :class={"text == '#{@verb_undo || l("Unfollow")}' ? '!btn-error' : ''"}
         class={
-          e(@class, "btn btn-sm btn-outline flex-1 !border-base-content/40 normal-case"),
+          e(@class, "btn btn-sm btn-neutral flex-1"),
           "btn-disabled": @disabled
         }
       >
