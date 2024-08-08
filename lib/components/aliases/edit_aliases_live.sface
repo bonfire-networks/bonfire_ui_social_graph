@@ -11,7 +11,7 @@
     <div class="form-control mt-4 w-full">
       {#if @aliases != []}
         <!-- <div class="text-sm">{l("Existing aliases")}</div> -->
-        <ul class="flex flex-col divide-y divide-base-content/10">
+        <ul class="flex flex-col divide-y divide-base-content/20">
           <li
             class="flex p-3 items-center justify-between"
             :for={%{edge: %{object: %{id: id, profile: profile, character: %{id: _} = character}}} <- @aliases}
