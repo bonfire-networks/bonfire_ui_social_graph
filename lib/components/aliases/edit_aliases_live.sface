@@ -63,6 +63,7 @@
         <div class="font-bold mb-2">{l("Add an external account")}</div>
         <StatelessComponent
           module={maybe_component(Bonfire.OpenID.Web.SignInWithExternalProvidersLive)}
+          source={:add}
           label=""
         />
         <div class="form-control w-full">
