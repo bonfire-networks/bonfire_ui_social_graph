@@ -72,7 +72,7 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
     %{
       component_id: assigns.id,
       object: object,
-      object_id: e(assigns, :object_id, nil) || ulid(object),
+      object_id: e(assigns, :object_id, nil) || uid(object),
       previous_value: e(assigns, :my_follow, nil)
     }
   end
