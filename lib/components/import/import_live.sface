@@ -42,7 +42,10 @@
           {!-- <FileInput field="file" class="mt-4 file-input file-input-bordered w-full max-w-md" opts={"accepts": ".csv"} /> --}
           <label for={@uploads.file.ref} class="mt-4  w-full max-w-md">
             <span>{l("Upload or drop")}</span>
-            <.live_file_input upload={@uploads.file} class="file-input file-input-bordered" />
+            <Phoenix.Component.live_file_input
+              upload={@uploads.file}
+              class="file-input file-input-bordered"
+            />
           </label>
         </div>
       </div>
