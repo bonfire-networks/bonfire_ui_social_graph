@@ -2,6 +2,7 @@ defmodule Bonfire.UI.Social.Graph.ImportLive do
   use Bonfire.UI.Common.Web, :stateful_component
 
   prop selected_tab, :any
+  prop scope, :atom, default: nil
 
   def update(assigns, socket) do
     {:ok,
@@ -25,8 +26,12 @@ defmodule Bonfire.UI.Social.Graph.ImportLive do
     {:noreply, socket}
   end
 
-  def handle_event("import", %{"type" => type} = _params, socket) do
-    case uploaded_entries(socket, :file) do
+  def handle_event("import", %{"type" => type} = params, socket) do
+    current_user = current_user_required!(socket)
+    #  TODO check permission
+    scope = params["scope"] || id(current_user)
+
+    case uploaded_entries(socket, :file) |> debug() do
       {[_ | _] = entries, []} ->
         with [%{ok: queued}] <-
                (for entry <- entries do
@@ -37,21 +42,29 @@ defmodule Bonfire.UI.Social.Graph.ImportLive do
                     # do
                     Bonfire.Social.Graph.Import.import_from_csv_file(
                       maybe_to_atom(type),
-                      current_user_required!(socket),
+                      scope,
                       path
                     )
 
                     #   {:ok, "#{num}"}
                     # end
                   end)
-                end)
-               |> debug() do
+                end) do
           {
             :noreply,
             socket
             |> assign_flash(:info, "#{queued} items queued for import :-)")
             # |> update(:uploaded_files, &(&1 ++ uploaded_files))
           }
+        else
+          e ->
+            error(e)
+
+            {
+              :noreply,
+              socket
+              |> assign_error("No items queued for import")
+            }
         end
 
       _ ->
@@ -72,4 +85,21 @@ defmodule Bonfire.UI.Social.Graph.ImportLive do
   #         __MODULE__,
   #         Bonfire.Files.LiveHandler
   #       )
+
+  def options_list(:instance_wide),
+    do: %{
+      "" => nil,
+      "List of users/instances to ghost" => :ghosts,
+      "List of users/instances to silence" => :silences,
+      "List of users/instances to block" => :blocks
+    }
+
+  def options_list(_),
+    do: %{
+      "" => nil,
+      "List of users I follow" => :follows,
+      "List of users/instances to ghost" => :ghosts,
+      "List of users/instances to silence" => :silences,
+      "List of users/instances to block" => :blocks
+    }
 end
