@@ -1,8 +1,4 @@
-<div
-  class="flex items-center gap-2 w-full"
-  x-data={"{text: '#{@verb_already || l("Following")}'}"}
-  title={@title}
->
+<div class="flex items-center gap-2 w-full" title={@title}>
   {#if @my_follow == nil and current_user_id(@__context__)}
     <button disabled class="normal-case flex-1 btn btn-disabled btn-sm">{l("loading...")}</button>
   {#elseif !@my_follow}
@@ -24,14 +20,15 @@
       <div id={@id} class="flex items-center gap-2">
         <#Icon solid="UserAdd" :if={!@hide_icon} class={e(@icon_class, "w-4 h-4 shrink-0")} />
         <span :if={!@hide_text} class={"truncate ellipsis", "ml-2": !@hide_icon}>
-          {@verb || l("Follow")} {@label}</span>
+          {@verb || if @follows_me, do: l("Follow back"), else: l("Follow")} {@label}</span>
       </div>
     </a>
   {#elseif @my_follow == :requested}
-    <span class="w-full flex-1" x-data={"{text: '#{l("Requested")}'}"}>
+    <span class="w-full flex-1">
       <a
+        x-data={"{text: '#{l("Requested")} #{@label}'}"}
         x-on:mouseover={"text = '#{l("Cancel")}'"}
-        x-on:mouseover.away={"text = '#{l("Requested")}'"}
+        x-on:mouseover.away={"text = '#{l("Requested")} #{@label}'"}
         data-cid={@id}
         data-id="unfollow"
         :on-click={if !@disabled, do: "Bonfire.Social.Graph.Follows:unfollow"}
@@ -49,30 +46,36 @@
       </a>
     </span>
   {#else}
-    <span class="w-full flex-1">
-      <a
-        phx-disable-with={l("loading...")}
-        x-on:mouseover={"text = '#{@verb_undo || l("Unfollow")}'"}
-        x-on:mouseover.away={"text = '#{@verb_already || l("Following")}'"}
-        id={"#{@id}-btn"}
-        data-cid={@id}
-        data-id="unfollow"
-        :on-click={if !@disabled, do: "Bonfire.Social.Graph.Follows:unfollow"}
-        phx-value-id={@object_id}
-        :class={"text == '#{@verb_undo || l("Unfollow")}' ? '!btn-error' : ''"}
-        class={
-          e(@class, "btn btn-sm btn-neutral flex-1"),
-          "btn-disabled": @disabled
-        }
-      >
-        <div id={@id} class="flex items-center gap-2">
-          <#Icon solid="UserRemove" :if={!@hide_icon} class={e(@icon_class, "w-4 h-4 shrink-0")} />
+    {!-- already following --}
+    {#case "#{@verb_already || if @follows_me, do: l("Mutual follower"), else: l("Following")} #{@label}"}
+      {#match btn_text}
+        <span class="w-full flex-1">
+          <a
+            x-data={"{text: '#{btn_text}'}"}
+            phx-disable-with={l("loading...")}
+            x-on:mouseover={"text = '#{@verb_undo || l("Unfollow")}'"}
+            x-on:mouseover.away={"text = '#{btn_text}'"}
+            id={"#{@id}-btn"}
+            data-cid={@id}
+            data-id="unfollow"
+            :on-click={if !@disabled, do: "Bonfire.Social.Graph.Follows:unfollow"}
+            phx-value-id={@object_id}
+            :class={"text == '#{@verb_undo || l("Unfollow")}' ? '!btn-error' : ''"}
+            class={
+              e(@class, "btn btn-sm btn-neutral flex-1"),
+              "btn-disabled": @disabled
+            }
+          >
+            <div id={@id} class="flex items-center gap-2">
+              <#Icon solid="UserRemove" :if={!@hide_icon} class={e(@icon_class, "w-4 h-4 shrink-0")} />
 
-          <span :if={!@hide_text} x-text="text" class={"truncate ellipsis", "ml-2": !@hide_icon}>
-            {@verb_already || l("Following")} {@label}</span>
-        </div>
-      </a>
-    </span>
+              <span :if={!@hide_text} x-text="text" class={"truncate ellipsis", "ml-2": !@hide_icon}>
+                {btn_text}
+              </span>
+            </div>
+          </a>
+        </span>
+    {/case}
 
     <#slot {@if_followed} />
   {/if}

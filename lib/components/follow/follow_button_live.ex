@@ -18,6 +18,7 @@ defmodule Bonfire.UI.Social.Graph.FollowButtonLive do
   prop verb_undo, :string, default: nil
 
   prop my_follow, :boolean, default: nil
+  prop follows_me, :boolean, default: false
   prop object_boundary, :any, default: nil
 
   slot if_followed
