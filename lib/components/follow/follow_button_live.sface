@@ -1,6 +1,6 @@
 <div class="flex items-center gap-2 w-full" title={@title}>
   {#if @my_follow == nil and current_user_id(@__context__)}
-    <button disabled class="normal-case flex-1 btn btn-disabled btn-sm">{l("loading...")}</button>
+    <button disabled class="normal-case w-full flex-1 btn btn-disabled btn-sm">{l("loading...")}</button>
   {#elseif !@my_follow}
     <a
       :if={!@my_follow}
@@ -13,7 +13,7 @@
       phx-disable-with={l("loading...")}
       phx-value-id={@object_id}
       class={
-        e(@class, "btn btn-sm flex-1 btn-neutral"),
+        e(@class, "btn w-full btn-sm flex-1 btn-neutral"),
         "btn-disabled": @disabled
       }
     >
@@ -62,7 +62,7 @@
             phx-value-id={@object_id}
             :class={"text == '#{@verb_undo || l("Unfollow")}' ? '!btn-error' : ''"}
             class={
-              e(@class, "btn btn-sm btn-neutral flex-1"),
+              e(@class, "btn btn-sm w-full btn-neutral flex-1"),
               "btn-disabled": @disabled
             }
           >
