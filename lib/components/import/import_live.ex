@@ -3,6 +3,7 @@ defmodule Bonfire.UI.Social.Graph.ImportLive do
 
   prop selected_tab, :any
   prop scope, :atom, default: nil
+  prop type, :atom, default: nil
 
   def update(assigns, socket) do
     {:ok,
@@ -29,7 +30,7 @@ defmodule Bonfire.UI.Social.Graph.ImportLive do
   def handle_event("import", %{"type" => type} = params, socket) do
     current_user = current_user_required!(socket)
     #  TODO check permission
-    scope = params["scope"] || id(current_user)
+    scope = e(assigns(socket), :scope, nil) || id(current_user)
 
     case uploaded_entries(socket, :file) |> debug() do
       {[_ | _] = entries, []} ->
@@ -86,20 +87,28 @@ defmodule Bonfire.UI.Social.Graph.ImportLive do
   #         Bonfire.Files.LiveHandler
   #       )
 
-  def options_list(:instance_wide),
+  def options_list(:instance_wide, :blocks),
     do: %{
       "" => nil,
-      "List of users/instances to ghost" => :ghosts,
-      "List of users/instances to silence" => :silences,
-      "List of users/instances to block" => :blocks
+      l("List of users/instances to ghost (instance-wide)") => :ghosts,
+      l("List of users/instances to silence (instance-wide)") => :silences,
+      l("List of users/instances to block (instance-wide)") => :blocks
     }
 
-  def options_list(_),
+  def options_list(_, :blocks),
     do: %{
       "" => nil,
-      "List of users I follow" => :follows,
-      "List of users/instances to ghost" => :ghosts,
-      "List of users/instances to silence" => :silences,
-      "List of users/instances to block" => :blocks
+      l("List of users/instances to ghost") => :ghosts,
+      l("List of users/instances to silence") => :silences,
+      l("List of users/instances to block") => :blocks
+    }
+
+  def options_list(_, _),
+    do: %{
+      "" => nil,
+      l("List of users I follow") => :follows,
+      l("List of users/instances to ghost") => :ghosts,
+      l("List of users/instances to silence") => :silences,
+      l("List of users/instances to block") => :blocks
     }
 end
