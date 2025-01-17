@@ -46,8 +46,8 @@
         </div>
       </div>
 
-      <div class="flex mt-5  items-start gap-6">
-        <span class="w-12 h-12 shrink-0  rounded-full flex place-content-center items-center bg-info/10">
+      <div class="flex mt-5 items-start gap-4">
+        <span class="w-8 h-8 shrink-0  rounded-full flex place-content-center text-info items-center bg-info/10">
           <b>1</b>
         </span>
         <div class="flex flex-col gap-1" phx-update="ignore">
@@ -61,14 +61,14 @@
         </div>
       </div>
 
-      <div class="mt-10 flex items-start gap-6">
-        <span class="w-12 h-12 shrink-0  rounded-full flex place-content-center items-center bg-info/10">
+      <div class="mt-10 flex items-start gap-4">
+        <span class="w-8 h-8 shrink-0 text-info rounded-full flex place-content-center items-center bg-info/10">
           <b>2</b>
         </span>
         <div class="flex flex-col gap-1">
           <div class="font-semibold">{l("Select the file you want to import")}</div>
           {!-- <FileInput field="file" class="mt-4 file-input file-input-bordered w-full max-w-md" opts={"accepts": ".csv"} /> --}
-          <label for={@uploads.file.ref} class="mt-4  w-full max-w-md">
+          <label for={@uploads.file.ref} class="w-full max-w-md">
             <span>{l("Upload or drop")}</span>
             <Phoenix.Component.live_file_input
               upload={@uploads.file}
@@ -109,7 +109,7 @@
 
       {!-- <input type="hidden" name="scope" value={@scope}> --}
 
-      <button class="btn mt-12 btn-primary w-full rounded-full normal-case">{l("Upload")}</button>
+      <button class="btn mt-4 btn-soft ml-12 btn-wide btn-primary">{l("Upload")}</button>
     </div>
   </Form>
 

@@ -8,11 +8,12 @@ defmodule Bonfire.UI.Social.Graph.ImportLive do
   def update(assigns, socket) do
     {:ok,
      socket
+     |> assign(assigns)
      |> assign(
        trigger_submit: false,
-       uploaded_files: []
+       uploaded_files: [],
+       page_title: "Blocks Import"
      )
-     |> assign(assigns)
      |> allow_upload(:file,
        accept: ~w(.csv),
        # TODO: make extensions & size configurable

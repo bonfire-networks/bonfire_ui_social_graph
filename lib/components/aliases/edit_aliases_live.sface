@@ -1,8 +1,8 @@
 <div class="p-4">
   <div class="flex items-center gap-4 justify-between">
     <div class="flex flex-col gap-1">
-      <div class="font-bold">{l("Other profiles")}</div>
-      <div class="text-sm font-light text-base-content/70">{l(
+      <div class="font-semibold text-sm">{l("Other profiles")}</div>
+      <div class="text-sm text-base-content/70">{l(
           "You can indicate your different profiles across the fediverse (including on other apps like Peertube, Pixelfed or Mobilizon), or your personal website, blogs, etc"
         )}</div>
     </div>
@@ -54,28 +54,37 @@
           </li>
         </ul>
       {#else}
-        <div class="text-warning bg-warning/10 border-warning/30 border rounded p-2 px-4 text-sm font-medium">{l("You don't have any alias yet")}</div>
+        <div class="alert alert-info alert-soft w-full">{l("You don't have any alias yet")}</div>
       {/if}
     </div>
 
     <form phx-submit="Bonfire.Social.Graph.Aliases:add_alias">
       <div class="form-control mt-6 w-full">
-        <div class="font-bold mb-2">{l("Add an external account")}</div>
+        <div class="font-semibold text-sm mb-2">{l("Add an external account")}</div>
         <StatelessComponent
           module={maybe_component(Bonfire.OpenID.Web.SignInWithExternalProvidersLive)}
           source={:add}
           label=""
         />
-        <div class="form-control w-full">
-          <!-- <div class="text-sm">{l("Add an alias")}</div> -->
-          <label class="label pt-0 px-0">
-            <span class="label-text text-base-content/70">{markdown(l("Specify the *@username@domain.com* of the account, or paste a URL"))}</span>
-          </label>
-          <div class="flex items-center gap-2">
-            <input name="actor" type="text" placeholder="Type here" class="input input-bordered w-full">
-            <button class="rounded-full btn-outline btn btn-primary !border-primary/30">{l("Add alias")}</button>
+
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">{markdown(l("Specify the *@username@domain.com* of the account, or paste a URL"))}</legend>
+          <div class="join">
+            <div>
+              <label class="input validator join-item">
+                <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g
+                    stroke-linejoin="round"
+                    stroke-linecap="round"
+                    stroke-width="2.5"
+                    fill="none"
+                    stroke="currentColor"
+                  ><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></g></svg>
+                <input name="actor" type="text" placeholder="type here...">
+              </label>
+            </div>
+            <button class="btn btn-neutral join-item">{"Add alias"}</button>
           </div>
-        </div>
+        </fieldset>
       </div>
     </form>
   </div>
