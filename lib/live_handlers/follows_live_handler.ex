@@ -6,22 +6,34 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
   def handle_event("follow", %{"id" => id} = params, socket) do
     # debug(socket)
 
-    set = [
-      my_follow: true
-    ]
+    if String.contains?(id, ",") do
+      # batch follow
+      if current_user = current_user(socket) do
+        Bonfire.Social.Graph.Follows.batch_follow(current_user, String.split(id, ","))
+        |> debug("batch follow result")
 
-    with {:ok, current_user} <- current_user_or_remote_interaction(socket, l("follow"), id),
-         {:ok, _follow} <- Bonfire.Social.Graph.Follows.follow(current_user, id) do
-      ComponentID.send_assigns(
-        e(params, "component", Bonfire.UI.Social.Graph.FollowButtonLive),
-        id,
-        set,
-        socket
-      )
+        # TODO: handle errors
+
+        {:noreply, socket |> assign_flash(:info, l("Trying to follow them all..."))}
+      end
     else
-      e ->
-        debug(e)
-        {:error, "Could not follow"}
+      set = [
+        my_follow: true
+      ]
+
+      with {:ok, current_user} <- current_user_or_remote_interaction(socket, l("follow"), id),
+           {:ok, _follow} <- Bonfire.Social.Graph.Follows.follow(current_user, id) do
+        ComponentID.send_assigns(
+          e(params, "component", Bonfire.UI.Social.Graph.FollowButtonLive),
+          id,
+          set,
+          socket
+        )
+      else
+        e ->
+          debug(e)
+          {:error, "Could not follow"}
+      end
     end
   end
 
@@ -61,6 +73,7 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
   def update_many_opts(opts \\ []) do
     opts ++
       [
+        skip_if_set: :my_follow,
         assigns_to_params_fn: &assigns_to_params/1,
         preload_fn: &do_preload/3
       ]

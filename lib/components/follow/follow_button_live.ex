@@ -1,10 +1,12 @@
 defmodule Bonfire.UI.Social.Graph.FollowButtonLive do
   use Bonfire.UI.Common.Web, :stateful_component
 
-  prop object_id, :string, required: true
+  prop object_id, :string, default: nil
+  prop object_ids, :list, default: []
 
   prop path, :string, default: nil
 
+  prop container_class, :css_class, default: "flex items-center gap-2 w-full"
   prop class, :css_class, default: nil
   prop icon_class, :css_class, default: nil
   prop label, :string, default: nil
@@ -17,7 +19,7 @@ defmodule Bonfire.UI.Social.Graph.FollowButtonLive do
   prop verb_already, :string, default: nil
   prop verb_undo, :string, default: nil
 
-  prop my_follow, :boolean, default: nil
+  prop my_follow, :any, default: nil
   prop follows_me, :boolean, default: false
   prop object_boundary, :any, default: nil
 
