@@ -27,12 +27,12 @@ defmodule Bonfire.UI.Social.Graph.RuntimeConfig do
         # ],
         network: [
           followers: l("Followers"),
-          followed: l("Followed")
+          followed: l("Following")
         ],
         my_network: [
           followers: l("Followers"),
           # requests: "Follower requests",
-          followed: l("Followed")
+          followed: l("Following")
           # requested: "Pending"
         ]
       ]
