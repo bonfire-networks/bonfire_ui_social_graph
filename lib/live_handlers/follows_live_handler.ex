@@ -151,4 +151,135 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
        }}
     end)
   end
+
+  def load_network("followed" = tab, user, params, socket) do
+    user = user || e(assigns(socket), :user, nil)
+    current_user = current_user(assigns(socket))
+    pagination = input_to_atoms(params)
+
+    requested =
+      if id(user) == id(current_user), do: list_requested(current_user, pagination), else: []
+
+    #  TODO: use FeedLoader
+    followed =
+      Bonfire.Social.Graph.Follows.list_followed(
+        user,
+        pagination: pagination,
+        current_user: current_user
+      )
+      |> debug("followed_listed")
+
+    [
+      loading: false,
+      selected_tab: tab,
+      back: "/@#{e(user, :character, :username, nil)}",
+      feed: requested ++ e(followed, :edges, []),
+      page_info: e(followed, :page_info, []),
+      previous_page_info: e(assigns(socket), :page_info, false)
+    ]
+  end
+
+  def load_network("followers" = tab, user, params, socket) do
+    user = user || e(assigns(socket), :user, nil)
+    current_user = current_user(assigns(socket))
+    pagination = input_to_atoms(params)
+
+    requests =
+      if id(user) == id(current_user), do: list_requests(current_user, pagination), else: []
+
+    #  TODO: use FeedLoader
+    followers =
+      Bonfire.Social.Graph.Follows.list_followers(user,
+        pagination: pagination,
+        current_user: current_user
+      )
+      |> debug("followers_listed")
+
+    [
+      loading: false,
+      selected_tab: tab,
+      back: "/@#{e(user, :character, :username, nil)}",
+      feed: requests ++ e(followers, :edges, []),
+      page_info: e(followers, :page_info, []),
+      previous_page_info: e(assigns(socket), :page_info, false)
+    ]
+  end
+
+  def load_network(tab, user, params, socket) when tab in ["members"] do
+    user = user || e(assigns(socket), :user, nil)
+    current_user = current_user(assigns(socket))
+    pagination = input_to_atoms(params)
+
+    requests =
+      if id(user) == id(current_user), do: list_requests(current_user, pagination), else: []
+
+    #  TODO: use FeedLoader
+    followers =
+      Bonfire.Social.Graph.Follows.list_followers(
+        user,
+        pagination: pagination,
+        current_user: current_user
+      )
+      |> debug("followers in feeed")
+
+    [
+      loading: false,
+      back: "/&#{e(user, :character, :username, nil)}",
+      selected_tab: tab,
+      feed: requests ++ e(followers, :edges, []),
+      page_info: e(followers, :page_info, []),
+      previous_page_info: e(assigns(socket), :page_info, false)
+    ]
+  end
+
+  def load_network("requested" = tab, _user, params, socket) do
+    requested = list_requested(current_user(assigns(socket)), input_to_atoms(params))
+
+    [
+      loading: false,
+      selected_tab: tab,
+      back: "/@#{e(current_user(assigns(socket)), :character, :username, nil)}",
+      feed: requested
+      # TODO: pagination
+      # page_info: e(requested, :page_info, [])
+    ]
+  end
+
+  def load_network("requests" = tab, _user, params, socket) do
+    requests = list_requests(current_user(assigns(socket)), input_to_atoms(params))
+
+    [
+      loading: false,
+      back: "/@#{e(current_user(assigns(socket)), :character, :username, nil)}",
+      selected_tab: tab,
+      feed: requests
+      # page_info: e(requested, :page_info, [])
+    ]
+  end
+
+  def list_requested(current_user, pagination) do
+    # TODO: apply boundaries to Requests and then be able to view someone's requests/requested that involve me
+    # TODO: pagination
+    # user,
+    Utils.maybe_apply(
+      Bonfire.Social.Requests,
+      :list_my_requested,
+      [pagination: pagination, current_user: current_user, type: Bonfire.Data.Social.Follow],
+      fallback_return: []
+    )
+    |> debug("requested")
+  end
+
+  def list_requests(current_user, pagination) do
+    # TODO: apply boundaries to Requests and then be able to view someone's requests/requested that involve me
+    # TODO: pagination
+    # user,
+    Utils.maybe_apply(
+      Bonfire.Social.Requests,
+      :list_my_requesters,
+      [pagination: pagination, current_user: current_user],
+      fallback_return: []
+    )
+    |> debug("requests")
+  end
 end
