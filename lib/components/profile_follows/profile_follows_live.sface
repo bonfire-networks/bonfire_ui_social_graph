@@ -5,19 +5,21 @@
     "max-w-[680px] mx-auto": !current_user_id(@__context__)
   }>
     <main class="flex flex-col bg-base-100">
-     
-     <div role="tablist" class="tabs pt-8 justify-evenly w-full tabs-border border-b border-base-content/10">
-      <LinkLive
-        to={"/@#{e(@user, :character, :username, "")}/followers"}
-        role="tab"
-        class={"tab", "tab-active": @selected_tab != "followed"}
-      >{l("Followers")}</LinkLive>
-      <LinkLive
-        to={"/@#{e(@user, :character, :username, "")}/followed"}
-        role="tab"
-        class={"tab", "tab-active": @selected_tab == "followed"}
-      >{l("Following")}</LinkLive>
-    </div>
+      <div
+        role="tablist"
+        class="tabs pt-8 justify-evenly w-full tabs-border border-b border-base-content/10"
+      >
+        <LinkLive
+          to={"/@#{e(@user, :character, :username, "")}/followers"}
+          role="tab"
+          class={"tab", "tab-active": @selected_tab != "followed"}
+        >{l("Followers")}</LinkLive>
+        <LinkLive
+          to={"/@#{e(@user, :character, :username, "")}/followed"}
+          role="tab"
+          class={"tab", "tab-active": @selected_tab == "followed"}
+        >{l("Following")}</LinkLive>
+      </div>
 
       <!-- <Bonfire.UI.Common.TabsLive
         :if={!@hide_tabs}
