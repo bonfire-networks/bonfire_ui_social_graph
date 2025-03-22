@@ -25,7 +25,7 @@ defmodule Bonfire.Social.Graph.Follows.Test do
       assert true == Follows.following?(me, someone)
 
       # Note: the html returned by render_click isn't updated to show the change (probably because it uses ComponentID and pubsub) even though this works in the browser, so we wait for after pubsub events are received
-      live_pubsub_wait(view)
+      live_async_wait(view)
 
       assert view
              |> render()
@@ -53,7 +53,7 @@ defmodule Bonfire.Social.Graph.Follows.Test do
       assert unfollow = view |> element("[data-id='unfollow']") |> render_click()
       assert false == Follows.following?(me, someone)
 
-      live_pubsub_wait(view)
+      live_async_wait(view)
 
       assert view
              |> render()
