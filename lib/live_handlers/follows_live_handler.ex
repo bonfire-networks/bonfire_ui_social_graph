@@ -67,7 +67,20 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
   end
 
   def update_many(assigns_sockets, opts \\ []) do
-    update_many_async(assigns_sockets, update_many_opts(opts))
+    {first_assigns, _socket} = List.first(assigns_sockets)
+
+    update_many_async(
+      assigns_sockets,
+      update_many_opts(
+        opts ++
+          [
+            id:
+              e(first_assigns, :user, :character, :username, nil) ||
+                e(first_assigns, :feed_name, nil) || e(first_assigns, :feed_id, nil) ||
+                e(first_assigns, :thread_id, nil) || id(first_assigns)
+          ]
+      )
+    )
   end
 
   def update_many_opts(opts \\ []) do
@@ -175,7 +188,7 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
       back: "/@#{e(user, :character, :username, nil)}",
       feed: requested ++ e(followed, :edges, []),
       page_info: e(followed, :page_info, []),
-      previous_page_info: e(assigns(socket), :page_info, false)
+      previous_page_info: e(assigns(socket), :page_info, nil)
     ]
   end
 
@@ -201,7 +214,7 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
       back: "/@#{e(user, :character, :username, nil)}",
       feed: requests ++ e(followers, :edges, []),
       page_info: e(followers, :page_info, []),
-      previous_page_info: e(assigns(socket), :page_info, false)
+      previous_page_info: e(assigns(socket), :page_info, nil)
     ]
   end
 
@@ -228,7 +241,7 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
       selected_tab: tab,
       feed: requests ++ e(followers, :edges, []),
       page_info: e(followers, :page_info, []),
-      previous_page_info: e(assigns(socket), :page_info, false)
+      previous_page_info: e(assigns(socket), :page_info, nil)
     ]
   end
 
