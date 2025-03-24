@@ -14,7 +14,7 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
 
         # TODO: handle errors
 
-        {:noreply, socket |> assign_flash(:info, l("Trying to follow them all..."))}
+        {:noreply, socket |> assign_flash(:info, l("Attempted to follow them all..."))}
       end
     else
       set = [
