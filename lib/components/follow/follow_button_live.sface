@@ -11,7 +11,7 @@
     <a
       data-cid={@id}
       data-id="follow"
-      id={"#{@id}-btn"}
+      id={@id}
       :on-click={if !@disabled, do: "Bonfire.Social.Graph.Follows:follow"}
       href={if !current_user_id(@__context__), do: "#{@path}/follow"}
       rel="noopener noreferrer"
@@ -22,7 +22,7 @@
         "btn-disabled": @disabled
       }
     >
-      <div id={@id} class="flex items-center gap-2">
+      <div class="flex items-center gap-2">
         <#Icon solid="UserAdd" :if={!@hide_icon} class={e(@icon_class, "w-4 h-4 shrink-0")} />
         <span :if={!@hide_text} class={"truncate ellipsis", "ml-2": !@hide_icon}>
           {@verb || if @follows_me, do: l("Follow back"), else: l("Follow")} {@label}</span>
@@ -33,19 +33,15 @@
       <a
         data-cid={@id}
         data-id="unfollow"
-        id={"#{@id}-requested-btn"}
+        id={@id}
         :on-click={if !@disabled, do: "Bonfire.Social.Graph.Follows:unfollow"}
         phx-value-id={@object_id || Enum.join(@object_ids, ",")}
-        phx-mouseover={
-          JS.add_class("!btn-error", to: "##{@id}-requested-btn")
-          |> JS.add_class("hidden", to: "##{@id}-requested-normal-text")
-          |> JS.remove_class("hidden", to: "##{@id}-requested-hover-text")
-        }
-        phx-mouseout={
-          JS.remove_class("!btn-error", to: "##{@id}-requested-btn")
-          |> JS.remove_class("hidden", to: "##{@id}-requested-normal-text")
-          |> JS.add_class("hidden", to: "##{@id}-requested-hover-text")
-        }
+        phx-mouseover={JS.add_class("!btn-error", to: @id)
+        |> JS.add_class("hidden", to: "##{@id}-requested-normal-text")
+        |> JS.remove_class("hidden", to: "##{@id}-requested-hover-text")}
+        phx-mouseout={JS.remove_class("!btn-error", to: @id)
+        |> JS.remove_class("hidden", to: "##{@id}-requested-normal-text")
+        |> JS.add_class("hidden", to: "##{@id}-requested-hover-text")}
         class={
           e(@class, "btn btn-sm btn-outline w-full lg:w-auto"),
           "btn-disabled": @disabled
@@ -53,11 +49,19 @@
       >
         <#Icon solid="UserRemove" :if={!@hide_icon} class={e(@icon_class, "w-4 h-4 shrink-0")} />
 
-        <span :if={!@hide_text} id={"#{@id}-requested-normal-text"} class={"truncate ellipsis", "ml-2": !@hide_icon}>
+        <span
+          :if={!@hide_text}
+          id={"#{@id}-requested-normal-text"}
+          class={"truncate ellipsis", "ml-2": !@hide_icon}
+        >
           {l("Requested")} {@label}
         </span>
-        
-        <span :if={!@hide_text} id={"#{@id}-requested-hover-text"} class={"hidden truncate ellipsis", "ml-2": !@hide_icon}>
+
+        <span
+          :if={!@hide_text}
+          id={"#{@id}-requested-hover-text"}
+          class={"hidden truncate ellipsis", "ml-2": !@hide_icon}
+        >
           {l("Cancel")}
         </span>
       </a>
@@ -69,34 +73,38 @@
         <span class="w-full flex-1">
           <a
             phx-disable-with={l("loading...")}
-            id={"#{@id}-btn"}
+            id={@id}
             data-cid={@id}
             data-id="unfollow"
             :on-click={if !@disabled, do: "Bonfire.Social.Graph.Follows:unfollow"}
             phx-value-id={@object_id || Enum.join(@object_ids, ",")}
-            phx-mouseover={
-              JS.add_class("!btn-error", to: "##{@id}-btn") 
-              |> JS.add_class("hidden", to: "##{@id}-normal-text")
-              |> JS.remove_class("hidden", to: "##{@id}-hover-text")
-            }
-            phx-mouseout={
-              JS.remove_class("!btn-error", to: "##{@id}-btn")
-              |> JS.remove_class("hidden", to: "##{@id}-normal-text")
-              |> JS.add_class("hidden", to: "##{@id}-hover-text")
-            }
+            phx-mouseover={JS.add_class("!btn-error", to: @id)
+            |> JS.add_class("hidden", to: "##{@id}-normal-text")
+            |> JS.remove_class("hidden", to: "##{@id}-hover-text")}
+            phx-mouseout={JS.remove_class("!btn-error", to: @id)
+            |> JS.remove_class("hidden", to: "##{@id}-normal-text")
+            |> JS.add_class("hidden", to: "##{@id}-hover-text")}
             class={
               e(@class, "btn btn-sm w-full btn-neutral flex-1"),
               "btn-disabled": @disabled
             }
           >
-            <div id={@id} class="flex items-center gap-2">
+            <div class="flex items-center gap-2">
               <#Icon solid="UserRemove" :if={!@hide_icon} class={e(@icon_class, "w-4 h-4 shrink-0")} />
 
-              <span :if={!@hide_text} id={"#{@id}-normal-text"} class={"truncate ellipsis", "ml-2": !@hide_icon}>
+              <span
+                :if={!@hide_text}
+                id={"#{@id}-normal-text"}
+                class={"truncate ellipsis", "ml-2": !@hide_icon}
+              >
                 {btn_text}
               </span>
-              
-              <span :if={!@hide_text} id={"#{@id}-hover-text"} class={"hidden truncate ellipsis", "ml-2": !@hide_icon}>
+
+              <span
+                :if={!@hide_text}
+                id={"#{@id}-hover-text"}
+                class={"hidden truncate ellipsis", "ml-2": !@hide_icon}
+              >
                 {@verb_undo || l("Unfollow")}
               </span>
             </div>
