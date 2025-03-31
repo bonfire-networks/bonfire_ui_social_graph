@@ -43,10 +43,9 @@
 #   end
 # end
 
-
 defmodule Bonfire.Social.Notifications.FollowsTest do
-use Bonfire.UI.Social.Graph.ConnCase, async: true
-alias Bonfire.Social.Graph.Follows
+  use Bonfire.UI.Social.Graph.ConnCase, async: true
+  alias Bonfire.Social.Graph.Follows
 
   describe "show" do
     test "when someone follows me in my notifications" do
