@@ -27,9 +27,12 @@ defmodule Bonfire.UI.Social.Graph.ConnCase do
 
       import Phoenix.LiveViewTest
       import Surface.LiveViewTest
+
       # import Bonfire.UI.Social.Graph.ConnCase
       import Bonfire.UI.Social.Graph.Test.ConnHelpers
       import Bonfire.UI.Social.Graph.Test.FakeHelpers
+
+      import PhoenixTest
 
       import Untangle
       use Arrows
