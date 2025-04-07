@@ -17,7 +17,7 @@
 #       next = "/notifications"
 #       # |> IO.inspect
 #       {view, doc} = floki_live(conn, next)
-#       assert feed = Floki.find(doc, ".feed")
+#       assert feed = Floki.find(doc, "[data-id=feed]")
 #       assert Floki.text(feed) =~ me.profile.name
 #       # FIXME
 #       assert Floki.text(feed) =~ "followed"
@@ -37,7 +37,7 @@
 #       next = "/notifications"
 #       # |> IO.inspect
 #       {view, doc} = floki_live(conn, next)
-#       assert feed = Floki.find(doc, ".feed")
+#       assert feed = Floki.find(doc, "[data-id=feed]")
 #       refute Floki.text(feed) =~ me.profile.name
 #     end
 #   end
@@ -65,8 +65,8 @@ defmodule Bonfire.Social.Notifications.FollowsTest do
       conn
       |> visit("/notifications")
       |> PhoenixTest.open_browser()
-      |> assert_has(".feed", text: someone.profile.name)
-      |> assert_has(".feed", text: "followed")
+      |> assert_has("[data-id=feed] article", text: someone.profile.name)
+      |> assert_has("[data-id=feed] article", text: "followed")
     end
   end
 
@@ -87,7 +87,7 @@ defmodule Bonfire.Social.Notifications.FollowsTest do
 
       conn
       |> visit("/notifications")
-      |> refute_has(".feed", text: me.profile.name)
+      |> refute_has("[data-id=feed] article", text: me.profile.name)
     end
   end
 end
