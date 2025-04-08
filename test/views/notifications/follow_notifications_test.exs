@@ -71,7 +71,7 @@ defmodule Bonfire.Social.Notifications.FollowsTest do
   end
 
   describe "DO NOT show" do
-    test "when I follow someone in my notifications" do
+    test "when I follow someone in my own notifications" do
       # Create two users
       some_account = fake_account!()
       someone = fake_user!(some_account)
@@ -83,11 +83,11 @@ defmodule Bonfire.Social.Notifications.FollowsTest do
       assert true == Follows.following?(me, someone)
 
       # Visit notifications as the user who did the following
-      conn = conn(user: someone, account: some_account)
+      conn = conn(user: me)
 
       conn
       |> visit("/notifications")
-      |> refute_has("[data-id=feed] article", text: me.profile.name)
+      |> refute_has("[data-id=feed] article", text: someone.profile.name)
     end
   end
 end
