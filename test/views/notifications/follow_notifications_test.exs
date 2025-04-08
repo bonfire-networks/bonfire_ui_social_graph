@@ -56,15 +56,15 @@ defmodule Bonfire.Social.Notifications.FollowsTest do
       me = fake_user!(some_account)
 
       # Set up the follow relationship
-      assert {:ok, _follow} = Follows.follow(me, someone)
-      assert true == Follows.following?(me, someone)
+      assert {:ok, _follow} = Follows.follow(someone, me)
+      assert true == Follows.following?(someone, me)
 
       # Visit notifications as the user who was followed
       conn = conn(user: me, account: some_account)
 
       conn
       |> visit("/notifications")
-      |> PhoenixTest.open_browser()
+      # |> PhoenixTest.open_browser()
       |> assert_has("[data-id=feed] article", text: someone.profile.name)
       |> assert_has("[data-id=feed] article", text: "followed")
     end
