@@ -54,6 +54,19 @@
             {/for}
           </ul>
         </div>
+        
+        <Bonfire.UI.Common.LoadMoreLive
+          :if={@page_info}
+          live_handler="Bonfire.Social.Graph.Follows"
+          page_info={@page_info}
+          context={@selected_tab}
+          hide_guest_fallback
+          hide_if_no_more
+        >
+          <:if_no_more>
+            <p class="text-center text-base-content/70 py-4">{l("That's everyone!")}</p>
+          </:if_no_more>
+        </Bonfire.UI.Common.LoadMoreLive>
       </div>
 
       <div :if={@selected_tab in ["requests", "followers", "members"]}>
@@ -82,6 +95,19 @@
             {/for}
           </ul>
         </div>
+        
+        <Bonfire.UI.Common.LoadMoreLive
+          :if={@page_info}
+          live_handler="Bonfire.Social.Graph.Follows"
+          page_info={@page_info}
+          context={@selected_tab}
+          hide_guest_fallback
+          hide_if_no_more
+        >
+          <:if_no_more>
+            <p class="text-center text-base-content/70 py-4">{l("That's everyone!")}</p>
+          </:if_no_more>
+        </Bonfire.UI.Common.LoadMoreLive>
       </div>
     </main>
   </div>

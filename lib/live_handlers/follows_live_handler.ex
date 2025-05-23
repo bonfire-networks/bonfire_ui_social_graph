@@ -66,6 +66,57 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
     end
   end
 
+  def handle_event("load_more", %{"context" => tab} = params, socket) do
+    user = e(assigns(socket), :user, nil)
+    current_user = current_user(assigns(socket))
+    
+    if is_nil(user) do
+      {:noreply, assign_flash(socket, :error, l("User not found"))}
+    else
+      pagination = input_to_atoms(params)
+      
+      try do
+        # Load just the next page of results
+        new_data = case tab do
+          "followed" ->
+            Bonfire.Social.Graph.Follows.list_followed(
+              user,
+              pagination: pagination,
+              current_user: current_user
+            )
+          
+          "followers" ->
+            Bonfire.Social.Graph.Follows.list_followers(
+              user,
+              pagination: pagination,
+              current_user: current_user
+            )
+          
+          _ ->
+            %{edges: [], page_info: %{}}
+        end
+        
+        {:noreply,
+         socket
+         |> assign(
+           feed: e(assigns(socket), :feed, []) ++ e(new_data, :edges, []),
+           page_info: e(new_data, :page_info, []),
+           previous_page_info: e(assigns(socket), :page_info, nil),
+           loading: false
+         )}
+      rescue
+        error ->
+          error(error, "Failed to load more #{tab}")
+          {:noreply, assign_flash(socket, :error, l("Could not load more"))}
+      end
+    end
+  end
+
+  def handle_event("preload_more", %{"context" => tab} = params, socket) do
+    # Same as load_more but for infinite scroll preloading
+    handle_event("load_more", params, socket)
+  end
+
   def update_many(assigns_sockets, opts \\ []) do
     {first_assigns, _socket} = List.first(assigns_sockets)
 
