@@ -1,3 +1,52 @@
+defmodule Bonfire.Social.Graph.FollowsTest do
+  use Bonfire.UI.Social.Graph.ConnCase, async: true
+  alias Bonfire.Social.Graph.Follows
+
+  setup do
+    account = fake_account!()
+    me = fake_user!(account)
+
+    conn = conn(user: me, account: account)
+
+    {:ok, conn: conn, account: account, me: me}
+  end
+
+  test "I can follow someone from their profile", %{conn: conn, me: me} do
+    # Create the profile to follow
+    some_account = fake_account!()
+    someone = fake_user!(some_account)
+
+    # Navigate to their profile
+    conn
+    |> visit(Bonfire.Common.URIs.path(someone))
+    |> click_link("[data-id=follow]", "Follow")
+    # |> PhoenixTest.open_browser()
+    |> assert_has("[data-id=unfollow]", text: "Following")
+
+    # Verify that we're now following
+    assert true == Follows.following?(me, someone)
+  end
+
+  test "I can unfollow someone from their profile", %{conn: conn, me: me} do
+    # Create the profile to unfollow
+    some_account = fake_account!()
+    someone = fake_user!(some_account)
+
+    # First make sure we're following them
+    {:ok, _follow} = Follows.follow(me, someone)
+    assert true == Follows.following?(me, someone)
+
+    # Navigate to their profile and unfollow
+    conn
+    |> visit(Bonfire.Common.URIs.path(someone))
+    |> click_link("[data-id=unfollow]", "Following")
+    |> assert_has("[data-id=follow]", text: "Follow")
+
+    # Verify that we're no longer following
+    assert false == Follows.following?(me, someone)
+  end
+end
+
 # defmodule Bonfire.Social.Graph.Follows.Test do
 #   use Bonfire.UI.Social.Graph.ConnCase, async: true
 #   alias Bonfire.Social.Fake
@@ -62,52 +111,3 @@
 #     end
 #   end
 # end
-
-defmodule Bonfire.Social.Graph.FollowsTest do
-  use Bonfire.UI.Social.Graph.ConnCase, async: true
-  alias Bonfire.Social.Graph.Follows
-
-  setup do
-    account = fake_account!()
-    me = fake_user!(account)
-
-    conn = conn(user: me, account: account)
-
-    {:ok, conn: conn, account: account, me: me}
-  end
-
-  test "I can follow someone from their profile", %{conn: conn, me: me} do
-    # Create the profile to follow
-    some_account = fake_account!()
-    someone = fake_user!(some_account)
-
-    # Navigate to their profile
-    conn
-    |> visit(Bonfire.Common.URIs.path(someone))
-    |> click_link("[data-id=follow]", "Follow")
-    # |> PhoenixTest.open_browser()
-    |> assert_has("[data-id=unfollow]", text: "Following")
-
-    # Verify that we're now following
-    assert true == Follows.following?(me, someone)
-  end
-
-  test "I can unfollow someone from their profile", %{conn: conn, me: me} do
-    # Create the profile to unfollow
-    some_account = fake_account!()
-    someone = fake_user!(some_account)
-
-    # First make sure we're following them
-    {:ok, _follow} = Follows.follow(me, someone)
-    assert true == Follows.following?(me, someone)
-
-    # Navigate to their profile and unfollow
-    conn
-    |> visit(Bonfire.Common.URIs.path(someone))
-    |> click_link("[data-id=unfollow]", "Following")
-    |> assert_has("[data-id=follow]", text: "Follow")
-
-    # Verify that we're no longer following
-    assert false == Follows.following?(me, someone)
-  end
-end

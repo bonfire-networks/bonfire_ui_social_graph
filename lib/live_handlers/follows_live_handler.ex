@@ -69,33 +69,34 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
   def handle_event("load_more", %{"context" => tab} = params, socket) do
     user = e(assigns(socket), :user, nil)
     current_user = current_user(assigns(socket))
-    
+
     if is_nil(user) do
       {:noreply, assign_flash(socket, :error, l("User not found"))}
     else
       pagination = input_to_atoms(params)
-      
+
       try do
         # Load just the next page of results
-        new_data = case tab do
-          "followed" ->
-            Bonfire.Social.Graph.Follows.list_followed(
-              user,
-              pagination: pagination,
-              current_user: current_user
-            )
-          
-          "followers" ->
-            Bonfire.Social.Graph.Follows.list_followers(
-              user,
-              pagination: pagination,
-              current_user: current_user
-            )
-          
-          _ ->
-            %{edges: [], page_info: %{}}
-        end
-        
+        new_data =
+          case tab do
+            "followed" ->
+              Bonfire.Social.Graph.Follows.list_followed(
+                user,
+                pagination: pagination,
+                current_user: current_user
+              )
+
+            "followers" ->
+              Bonfire.Social.Graph.Follows.list_followers(
+                user,
+                pagination: pagination,
+                current_user: current_user
+              )
+
+            _ ->
+              %{edges: [], page_info: %{}}
+          end
+
         {:noreply,
          socket
          |> assign(

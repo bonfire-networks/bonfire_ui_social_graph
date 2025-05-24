@@ -54,7 +54,7 @@
             {/for}
           </ul>
         </div>
-        
+
         <Bonfire.UI.Common.LoadMoreLive
           :if={@page_info}
           live_handler="Bonfire.Social.Graph.Follows"
@@ -95,7 +95,7 @@
             {/for}
           </ul>
         </div>
-        
+
         <Bonfire.UI.Common.LoadMoreLive
           :if={@page_info}
           live_handler="Bonfire.Social.Graph.Follows"
