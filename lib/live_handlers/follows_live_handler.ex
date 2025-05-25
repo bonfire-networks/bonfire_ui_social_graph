@@ -68,7 +68,7 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
 
   def handle_event("load_more", %{"context" => tab} = params, socket) do
     user = e(assigns(socket), :user, nil)
-    current_user = current_user(assigns(socket))
+    current_user = current_user(socket)
 
     if is_nil(user) do
       {:noreply, assign_flash(socket, :error, l("User not found"))}
@@ -219,7 +219,7 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
 
   def load_network("followed" = tab, user, params, socket) do
     user = user || e(assigns(socket), :user, nil)
-    current_user = current_user(assigns(socket))
+    current_user = current_user(socket)
     pagination = input_to_atoms(params)
 
     requested =
@@ -246,7 +246,7 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
 
   def load_network("followers" = tab, user, params, socket) do
     user = user || e(assigns(socket), :user, nil)
-    current_user = current_user(assigns(socket))
+    current_user = current_user(socket)
     pagination = input_to_atoms(params)
 
     requests =
@@ -272,7 +272,7 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
 
   def load_network(tab, user, params, socket) when tab in ["members"] do
     user = user || e(assigns(socket), :user, nil)
-    current_user = current_user(assigns(socket))
+    current_user = current_user(socket)
     pagination = input_to_atoms(params)
 
     requests =
@@ -298,12 +298,12 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
   end
 
   def load_network("requested" = tab, _user, params, socket) do
-    requested = list_requested(current_user(assigns(socket)), input_to_atoms(params))
+    requested = list_requested(current_user(socket), input_to_atoms(params))
 
     [
       loading: false,
       selected_tab: tab,
-      back: "/@#{e(current_user(assigns(socket)), :character, :username, nil)}",
+      back: "/@#{e(current_user(socket), :character, :username, nil)}",
       feed: requested
       # TODO: pagination
       # page_info: e(requested, :page_info, [])
@@ -311,11 +311,11 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
   end
 
   def load_network("requests" = tab, _user, params, socket) do
-    requests = list_requests(current_user(assigns(socket)), input_to_atoms(params))
+    requests = list_requests(current_user(socket), input_to_atoms(params))
 
     [
       loading: false,
-      back: "/@#{e(current_user(assigns(socket)), :character, :username, nil)}",
+      back: "/@#{e(current_user(socket), :character, :username, nil)}",
       selected_tab: tab,
       feed: requests
       # page_info: e(requested, :page_info, [])
