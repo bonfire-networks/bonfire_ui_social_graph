@@ -1,4 +1,4 @@
-defmodule Bonfire.Social.Graph.FollowsTest do
+defmodule Bonfire.UI.Social.Graph.FollowsTest do
   use Bonfire.UI.Social.Graph.ConnCase, async: true
   alias Bonfire.Social.Graph.Follows
 
