@@ -54,11 +54,27 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
     end
   end
 
-  def handle_event("accept", %{"id" => id} = _params, socket) do
+  def handle_event("accept", %{"id" => request_id} = _params, socket) do
     # debug(socket)
 
     with {:ok, _follow} <-
-           Bonfire.Social.Graph.Follows.accept(id, current_user: current_user_required!(socket)) do
+           Bonfire.Social.Graph.Follows.accept(request_id,
+             current_user: current_user_required!(socket)
+           ) do
+      {:noreply, socket}
+    else
+      e ->
+        error(e, l("There was an error when trying to accept the request"))
+    end
+  end
+
+  def handle_event("accept", %{"user_id" => user_id} = _params, socket) do
+    # debug(socket)
+
+    with {:ok, _follow} <-
+           Bonfire.Social.Graph.Follows.accept_from(user_id,
+             current_user: current_user_required!(socket)
+           ) do
       {:noreply, socket}
     else
       e ->
