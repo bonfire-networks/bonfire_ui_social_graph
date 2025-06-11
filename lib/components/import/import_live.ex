@@ -91,25 +91,25 @@ defmodule Bonfire.UI.Social.Graph.ImportLive do
   def options_list(:instance_wide, :blocks, _),
     do: %{
       "" => nil,
-      l("List of users/instances to ghost (instance-wide)") => :ghosts,
-      l("List of users/instances to silence (instance-wide)") => :silences,
-      l("List of users/instances to block (instance-wide)") => :blocks
+      l("List of profiles/instances to ghost (instance-wide)") => :ghosts,
+      l("List of profiles/instances to silence (instance-wide)") => :silences,
+      l("List of profiles/instances to block (instance-wide)") => :blocks
     }
 
   def options_list(_, type, federating?) when type == :blocks or federating? == false,
     do: %{
       "" => nil,
-      l("List of users/instances to ghost") => :ghosts,
-      l("List of users/instances to silence") => :silences,
-      l("List of users/instances to block") => :blocks
+      l("List of profiles/instances to ghost") => :ghosts,
+      l("List of profiles/instances to silence") => :silences,
+      l("List of profiles/instances to block") => :blocks
     }
 
   def options_list(_, _, _),
     do: %{
       "" => nil,
-      l("List of users I follow") => :follows,
-      l("List of users/instances to ghost") => :ghosts,
-      l("List of users/instances to silence") => :silences,
-      l("List of users/instances to block") => :blocks
+      l("List of profiles to follow") => :follows,
+      l("List of profiles/instances to ghost") => :ghosts,
+      l("List of profiles/instances to silence") => :silences,
+      l("List of profiles/instances to block") => :blocks
     }
 end
