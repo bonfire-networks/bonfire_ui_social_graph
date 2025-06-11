@@ -88,7 +88,7 @@ defmodule Bonfire.UI.Social.Graph.ImportLive do
   #         Bonfire.Files.LiveHandler
   #       )
 
-  def options_list(:instance_wide, :blocks),
+  def options_list(:instance_wide, :blocks, _),
     do: %{
       "" => nil,
       l("List of users/instances to ghost (instance-wide)") => :ghosts,
@@ -96,7 +96,7 @@ defmodule Bonfire.UI.Social.Graph.ImportLive do
       l("List of users/instances to block (instance-wide)") => :blocks
     }
 
-  def options_list(_, :blocks),
+  def options_list(_, type, federating?) when type == :blocks or federating? == false,
     do: %{
       "" => nil,
       l("List of users/instances to ghost") => :ghosts,
@@ -104,7 +104,7 @@ defmodule Bonfire.UI.Social.Graph.ImportLive do
       l("List of users/instances to block") => :blocks
     }
 
-  def options_list(_, _),
+  def options_list(_, _, _),
     do: %{
       "" => nil,
       l("List of users I follow") => :follows,
