@@ -39,9 +39,9 @@
             <!-- {type}: {path} -->
             <StatelessComponent
               module={maybe_component(Bonfire.UI.Me.ProfileLinkLive)}
-              href={path}
+              href={path || e(metadata, "url", nil)}
               metadata={metadata}
-              text={type |> to_string() |> :string.titlecase()}
+              text={Text.upcase_first(type)}
               class="flex flex-col gap-1"
             />
 
