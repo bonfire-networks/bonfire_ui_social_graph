@@ -41,7 +41,7 @@
               module={maybe_component(Bonfire.UI.Me.ProfileLinkLive)}
               href={path || e(metadata, "url", nil)}
               metadata={metadata}
-              text={Text.upcase_first(type)}
+              text={e(metadata, "name", nil) || Text.upcase_first(type)}
               class="flex flex-col gap-1"
             />
 
