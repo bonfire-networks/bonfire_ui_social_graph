@@ -43,7 +43,7 @@
         |> JS.remove_class("hidden", to: "##{@id}-requested-normal-text")
         |> JS.add_class("hidden", to: "##{@id}-requested-hover-text")}
         class={
-          e(@class, "btn btn-info btn-soft"),
+          e(@class, "btn btn-info btn-sm btn-soft"),
           "btn-disabled": @disabled
         }
       >
@@ -85,7 +85,7 @@
             |> JS.remove_class("hidden", to: "##{@id}-normal-text")
             |> JS.add_class("hidden", to: "##{@id}-hover-text")}
             class={
-              e(@class, "btn w-full btn-neutral flex-1"),
+              e(@class, "btn w-full btn-sm btn-neutral flex-1"),
               "btn-disabled": @disabled
             }
           >
