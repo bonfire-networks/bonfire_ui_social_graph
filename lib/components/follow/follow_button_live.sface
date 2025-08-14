@@ -18,12 +18,16 @@
       phx-disable-with={l("loading...")}
       phx-value-id={@object_id || Enum.join(@object_ids, ",")}
       class={
-        e(@class, "btn w-full btn-sm flex-1 btn-neutral"),
+        e(@class, "btn w-full btn-sm flex-1"),
         "btn-disabled": @disabled
       }
     >
       <div class="flex items-center gap-2">
-        <#Icon solid="UserAdd" :if={!@hide_icon} class={e(@icon_class, "w-4 h-4 shrink-0")} />
+        <#Icon
+          iconify="ph:user-plus-duotone"
+          :if={!@hide_icon}
+          class={e(@icon_class, "w-4 h-4 shrink-0")}
+        />
         <span :if={!@hide_text} class={"truncate ellipsis", "ml-2": !@hide_icon}>
           {@verb || if @follows_me, do: l("Follow back"), else: l("Follow")} {@label}</span>
       </div>
@@ -85,7 +89,7 @@
             |> JS.remove_class("hidden", to: "##{@id}-normal-text")
             |> JS.add_class("hidden", to: "##{@id}-hover-text")}
             class={
-              e(@class, "btn w-full btn-sm btn-neutral flex-1"),
+              e(@class, "btn w-full btn-sm btn-primary btn-soft flex-1"),
               "btn-disabled": @disabled
             }
           >
