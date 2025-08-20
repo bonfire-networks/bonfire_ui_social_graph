@@ -107,7 +107,7 @@ defmodule Bonfire.UI.Social.Graph.ImportLive do
   def options_list(_, _, _),
     do: %{
       "" => nil,
-      l("List of profiles to follow") => :follows,
+      l("List of profiles to follow") => :following,
       l("List of profiles/instances to ghost") => :ghosts,
       l("List of profiles/instances to silence") => :silences,
       l("List of profiles/instances to block") => :blocks
