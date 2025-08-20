@@ -13,7 +13,7 @@ defmodule Bonfire.UI.Social.Graph.ImportFollowsTest do
     {:ok, conn: conn, account: account, user: me}
   end
 
-  test "import follows with valid CSV data works", %{user: user, conn: conn} do
+  test "export and then import follows with valid CSV data works", %{user: user, conn: conn} do
     # Create users to follow
     followee1 = fake_user!("Followee1")
     followee2 = fake_user!("Followee2")
