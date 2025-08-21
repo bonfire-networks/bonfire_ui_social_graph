@@ -113,6 +113,7 @@ defmodule Bonfire.UI.Social.Graph.ImportHistoryLive do
       id: job.id,
       operation: op_type,
       identifier: identifier,
+      context: get_in(job.args, ["context"]),
       target_user: target_user,
       state: job.state,
       inserted_at: job.inserted_at,
@@ -129,6 +130,7 @@ defmodule Bonfire.UI.Social.Graph.ImportHistoryLive do
   defp format_operation_type("silences_import"), do: l("Silence Import")
   defp format_operation_type("ghosts_import"), do: l("Ghost Import")
   defp format_operation_type("bookmarks_import"), do: l("Bookmark Import")
+  defp format_operation_type("circles_import"), do: l("Circle Import")
   defp format_operation_type(other), do: other
 
   defp format_state("completed"), do: {l("Completed"), "text-success"}

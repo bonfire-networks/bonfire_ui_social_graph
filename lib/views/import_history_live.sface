@@ -53,6 +53,11 @@
                 <span class="font-mono">{job.identifier}</span>
               </p>
 
+              <p :if={job[:context] && !job.target_user}>
+                <span class="font-medium">{l("Context:")}</span>
+                <span class="font-mono">{job[:context]}</span>
+              </p>
+
               <p>
                 <span class="text-sm">{l("Started:")}</span>
                 {job.inserted_at}
