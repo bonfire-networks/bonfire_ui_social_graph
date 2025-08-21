@@ -105,34 +105,50 @@ defmodule Bonfire.UI.Social.Graph.ImportHistoryLive do
   end
 
   defp format_job(job, users_by_identifier \\ %{}) do
-    op_type = get_in(job.args, ["op"]) |> format_operation_type()
+    op_code = get_in(job.args, ["op"])
+    op_type = op_code |> format_operation_type()
     identifier = get_in(job.args, ["identifier"])
     target_user = if identifier, do: Map.get(users_by_identifier, identifier)
 
+    # Extract error for special handling
+    extracted_error =
+      job.errors
+      |> format_errors()
+      |> case do
+        nil -> nil
+        err -> String.trim(err)
+      end
+
+    # Special case: circles_import + "Subject id: has already been taken"
+    is_pre_existing =
+      op_code == "circles_import" and extracted_error == "Subject id: has already been taken"
+
     %{
       id: job.id,
+      op_code: op_code,
       operation: op_type,
       identifier: identifier,
       context: get_in(job.args, ["context"]),
       target_user: target_user,
-      state: job.state,
+      state: if(is_pre_existing, do: "pre_existing", else: job.state),
       inserted_at: job.inserted_at,
       completed_at: job.completed_at,
       attempted_at: job.attempted_at,
-      errors: job.errors,
+      error: if(!is_pre_existing, do: extracted_error),
       attempt: job.attempt,
       max_attempts: job.max_attempts
     }
   end
 
-  defp format_operation_type("follows_import"), do: l("Follow Import")
-  defp format_operation_type("blocks_import"), do: l("Block Import")
-  defp format_operation_type("silences_import"), do: l("Silence Import")
-  defp format_operation_type("ghosts_import"), do: l("Ghost Import")
-  defp format_operation_type("bookmarks_import"), do: l("Bookmark Import")
-  defp format_operation_type("circles_import"), do: l("Circle Import")
+  defp format_operation_type("follows_import"), do: l("Follow")
+  defp format_operation_type("blocks_import"), do: l("Block")
+  defp format_operation_type("silences_import"), do: l("Silence")
+  defp format_operation_type("ghosts_import"), do: l("Ghost")
+  defp format_operation_type("bookmarks_import"), do: l("Bookmark")
+  defp format_operation_type("circles_import"), do: l("Circle")
   defp format_operation_type(other), do: other
 
+  defp format_state("pre_existing"), do: {l("Pre-existing"), "text-info/70"}
   defp format_state("completed"), do: {l("Completed"), "text-success"}
   defp format_state("failed"), do: {l("Failed (will attempt again)"), "text-error"}
   defp format_state("executing"), do: {l("Running"), "text-warning"}
@@ -162,6 +178,7 @@ defmodule Bonfire.UI.Social.Graph.ImportHistoryLive do
         |> String.trim_trailing("}")
         |> String.replace(":error, ", "")
         |> String.replace("\"", "")
+        |> String.replace("\\n", "\n")
         |> Types.maybe_to_atom()
         |> Bonfire.Common.Errors.error_msg({:error, ...})
 
