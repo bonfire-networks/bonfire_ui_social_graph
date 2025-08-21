@@ -101,7 +101,9 @@ defmodule Bonfire.UI.Social.Graph.ImportLive do
       "" => nil,
       l("List of profiles/instances to ghost") => :ghosts,
       l("List of profiles/instances to silence") => :silences,
-      l("List of profiles/instances to block") => :blocks
+      l("List of profiles/instances to block") => :blocks,
+      l("List of bookmarks") => :bookmarks,
+      l("List of circles") => :circles
     }
 
   def options_list(_, _, _),
@@ -111,6 +113,7 @@ defmodule Bonfire.UI.Social.Graph.ImportLive do
       l("List of profiles/instances to ghost") => :ghosts,
       l("List of profiles/instances to silence") => :silences,
       l("List of profiles/instances to block") => :blocks,
-      l("List of bookmarks") => :bookmarks
+      l("List of bookmarks") => :bookmarks,
+      l("List of circles") => :circles
     }
 end
