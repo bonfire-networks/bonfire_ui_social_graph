@@ -1,0 +1,3 @@
+<div>
+  <Bonfire.UI.Social.Graph.ProfileFollowIndicator user={@user} follows_me={@follows_me} />
+</div>
