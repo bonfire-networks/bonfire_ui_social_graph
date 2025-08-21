@@ -1,4 +1,4 @@
-defmodule Bonfire.UI.Social.Graph.ImportFollowsTest do
+defmodule Bonfire.UI.Social.Graph.ExportImportFollowsTest do
   use Bonfire.UI.Social.Graph.ConnCase, async: true
 
   alias Bonfire.Social.Graph.Follows

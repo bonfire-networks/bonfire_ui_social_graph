@@ -110,6 +110,7 @@ defmodule Bonfire.UI.Social.Graph.ImportLive do
       l("List of profiles to follow") => :following,
       l("List of profiles/instances to ghost") => :ghosts,
       l("List of profiles/instances to silence") => :silences,
-      l("List of profiles/instances to block") => :blocks
+      l("List of profiles/instances to block") => :blocks,
+      l("List of bookmarks") => :bookmarks
     }
 end

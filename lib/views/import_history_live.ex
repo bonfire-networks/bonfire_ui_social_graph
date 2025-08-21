@@ -128,6 +128,7 @@ defmodule Bonfire.UI.Social.Graph.ImportHistoryLive do
   defp format_operation_type("blocks_import"), do: l("Block Import")
   defp format_operation_type("silences_import"), do: l("Silence Import")
   defp format_operation_type("ghosts_import"), do: l("Ghost Import")
+  defp format_operation_type("bookmarks_import"), do: l("Bookmark Import")
   defp format_operation_type(other), do: other
 
   defp format_state("completed"), do: {l("Completed"), "text-success"}

@@ -49,7 +49,7 @@
 
             <div class="text-sm text-base-content/70 space-y-1">
               <p :if={job.identifier && !job.target_user}>
-                <span class="font-medium">{l("Importing (not a known user or actor):")}</span>
+                <span class="font-medium">{l("Importing:")}</span>
                 <span class="font-mono">{job.identifier}</span>
               </p>
 
