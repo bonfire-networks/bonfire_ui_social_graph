@@ -13,9 +13,15 @@ defmodule Bonfire.UI.Social.Graph.ImportHistoryLive do
       {:ok,
        assign(
          socket,
-         page_title: l("Import History"),
+         page_title: l("Import Dashboard"),
          page: "import_history",
          back: true,
+         page_header_aside: [
+              {Bonfire.UI.Social.Graph.ImportRefreshLive,
+               [
+                 feed_id: :import_history,
+               ]}
+            ],
          selected_tab: :import_history,
          nav_items: Bonfire.Common.ExtensionModule.default_nav(),
          jobs: jobs,
@@ -24,6 +30,10 @@ defmodule Bonfire.UI.Social.Graph.ImportHistoryLive do
     else
       throw(l("You need to log in to view import history"))
     end
+  end
+
+  def handle_params(_params, _url, socket) do
+    {:noreply, socket}
   end
 
   def handle_event("refresh", _attrs, socket) do
@@ -72,7 +82,7 @@ defmodule Bonfire.UI.Social.Graph.ImportHistoryLive do
     # # For remaining identifiers, try fetching by AP ID or other methods
     # remaining_identifiers = identifiers -- Map.keys(users_by_username)
 
-    # users_by_ap_id = 
+    # users_by_ap_id =
     #   if remaining_identifiers != [] do
     #     remaining_identifiers
     #     |> Enum.map(fn identifier ->
@@ -97,11 +107,95 @@ defmodule Bonfire.UI.Social.Graph.ImportHistoryLive do
     user_id = id(current_user)
 
     try do
-      Bonfire.Common.ObanHelpers.import_job_stats_for_user(repo(), user_id)
+      # Get basic job state counts
+      basic_stats = Bonfire.Common.ObanHelpers.job_stats_for_user(repo(), "import", user_id)
+
+      # Get all jobs for detailed analysis
+      jobs =
+        Bonfire.Common.ObanHelpers.list_jobs_queue_for_user(repo(), "import", user_id,
+          limit: 1000
+        )
+
+      # Compute enhanced statistics
+      compute_enhanced_stats(basic_stats, jobs)
     rescue
       _error ->
         %{}
     end
+  end
+
+  defp compute_enhanced_stats(basic_stats, jobs) do
+    total_jobs = Enum.sum(Map.values(basic_stats))
+
+    # Calculate meaningful metrics
+    completed = Map.get(basic_stats, "completed", 0)
+    pre_existing = count_pre_existing_jobs(jobs)
+    successful = completed + pre_existing
+
+    active_jobs =
+      Map.get(basic_stats, "executing", 0) +
+        Map.get(basic_stats, "available", 0) +
+        Map.get(basic_stats, "scheduled", 0) +
+        Map.get(basic_stats, "retryable", 0)
+
+    failed_jobs =
+      Map.get(basic_stats, "failed", 0) +
+        Map.get(basic_stats, "discarded", 0)
+
+    success_rate = if total_jobs > 0, do: Float.round(successful / total_jobs * 100, 1), else: 0
+
+    # Count by operation type
+    operation_counts = count_by_operation_type(jobs)
+
+    %{
+      # Enhanced metrics
+      total: total_jobs,
+      successful: successful,
+      active: active_jobs,
+      failed: failed_jobs,
+      success_rate: success_rate,
+      by_operation: operation_counts,
+
+      # Original basic stats for backward compatibility
+      raw_stats: basic_stats
+    }
+  end
+
+  defp count_pre_existing_jobs(jobs) do
+    jobs
+    |> Enum.count(fn job ->
+      op_code = get_in(job.args, ["op"])
+      error = format_errors(job.errors)
+      op_code == "circles_import" and error == "Subject id: has already been taken"
+    end)
+  end
+
+  defp count_by_operation_type(jobs) do
+    # Start with all operation types set to 0
+    all_operations = all_operation_types()
+
+    # Count actual jobs by operation type
+    actual_counts =
+      jobs
+      |> Enum.group_by(fn job -> get_in(job.args, ["op"]) end)
+      |> Enum.map(fn {op_code, job_list} ->
+        {format_operation_type(op_code), length(job_list)}
+      end)
+      |> Enum.into(%{})
+
+    # Merge actual counts with all types (actual counts override 0 defaults)
+    Map.merge(all_operations, actual_counts)
+  end
+
+  defp all_operation_types do
+    %{
+      l("Follow") => 0,
+      l("Block") => 0,
+      l("Silence") => 0,
+      l("Ghost") => 0,
+      l("Bookmark") => 0,
+      l("Circle") => 0
+    }
   end
 
   defp format_job(job, users_by_identifier \\ %{}) do
