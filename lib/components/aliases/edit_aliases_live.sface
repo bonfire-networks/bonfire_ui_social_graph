@@ -28,7 +28,7 @@
               phx-click="Bonfire.Social.Graph.Aliases:remove_alias"
               phx-value-object={id}
               type="button"
-              class="btn btn-sm btn-circle !border-error/30 btn-outline btn-error"
+              class="btn btn-sm btn-circle btn-soft btn-error"
             >
               <#Icon iconify="ph:trash-fill" class="w-4 h-4" /></button>
           </li>
@@ -49,7 +49,7 @@
               phx-click="Bonfire.Social.Graph.Aliases:remove_alias"
               phx-value-object={id}
               type="button"
-              class="btn btn-sm btn-circle !border-error/30 btn-outline btn-error"
+              class="btn btn-sm btn-circle btn-soft btn-error"
             ><#Icon iconify="ph:trash-fill" class="w-4 h-4" /></button>
           </li>
         </ul>

@@ -3,7 +3,7 @@
     <button
       disabled
       class={
-        e(@class, "btn w-full flex-1"),
+        e(@class, "btn w-full flex-1 btn-sm"),
         "normal-case btn-disabled"
       }
     >{if !@hide_text, do: l("loading..."), else: "..."}</button>
