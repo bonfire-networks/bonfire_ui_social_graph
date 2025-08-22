@@ -104,7 +104,7 @@
   <div class="text-sm text-base-content/70 mb-2">{l("Showing the most recent %{count} import jobs.", count: length(@jobs))}</div>
     <div :for={job <- @jobs} class="card bg-base-100 border border-base-content/10 shadow-sm">
       <div class="p-4 pb-0 flex items-start justify-between card-title">
-        <div class="flex flex-col gap-1 mb-2">
+        <div class="flex flex-col gap-1 mb-2 w-full">
           <div class="flex items-center gap-2 justify-between">
             <h3 class="font-semibold text-sm">{job.operation}<span :if={job[:context]}>:
                 {job[:context]}</span>
