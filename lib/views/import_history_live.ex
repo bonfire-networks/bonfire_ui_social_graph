@@ -17,11 +17,11 @@ defmodule Bonfire.UI.Social.Graph.ImportHistoryLive do
          page: "import_history",
          back: true,
          page_header_aside: [
-              {Bonfire.UI.Social.Graph.ImportRefreshLive,
-               [
-                 feed_id: :import_history,
-               ]}
-            ],
+           {Bonfire.UI.Social.Graph.ImportRefreshLive,
+            [
+              feed_id: :import_history
+            ]}
+         ],
          selected_tab: :import_history,
          nav_items: Bonfire.Common.ExtensionModule.default_nav(),
          jobs: jobs,

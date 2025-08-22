@@ -16,20 +16,23 @@
             <#Icon iconify="ph:chart-line-duotone" class="w-6 h-6" />
           </div>
           <div class="stat-title text-xs">{l("Total Progress")}</div>
-          <div class="stat-value text-lg">{@stats.successful || 0}/{@stats.total || 0}</div>
+          <div class="stat-value text-lg">{(@stats.total || 0) - (@stats.active || 0)}/{@stats.total || 0}</div>
           <div class="stat-desc">
             <div class="w-full bg-base-300 rounded-full h-2 mt-1">
-              <div 
+              <div
                 class="bg-success h-2 rounded-full transition-all duration-300"
-                style={"width: #{@stats.success_rate || 0}%"}
-              ></div>
+                style={"width: #{if(@stats.total && @stats.total > 0, do: round((@stats.total - (@stats.active || 0)) / @stats.total * 100), else: 0)}%"}
+              />
             </div>
-            <span class="text-xs mt-1 inline-block">{@stats.success_rate || 0}% {l("complete")}</span>
+            <span class="text-xs mt-1 inline-block">{if(@stats.total && @stats.total > 0,
+                do: round((@stats.total - (@stats.active || 0)) / @stats.total * 100),
+                else: 0
+              )}% {l("complete")}</span>
           </div>
         </div>
 
         <!-- Active Jobs -->
-        <div class="stat ">
+        <div class="stat">
           <div class="stat-figure text-warning">
             <#Icon iconify="ph:clock-duotone" class="w-6 h-6" />
           </div>
@@ -39,35 +42,38 @@
         </div>
       </div>
       <div class="stats bg-base-200 border-base-content/10 border w-full">
-      <!-- Success Rate -->
-      <div class="stat">
-        <div class="stat-figure text-success">
-          <#Icon iconify="ph:check-duotone" class="w-6 h-6" />
+        <!-- Success Rate -->
+        <div class="stat">
+          <div class="stat-figure text-success">
+            <#Icon iconify="ph:check-duotone" class="w-6 h-6" />
+          </div>
+          <div class="stat-title text-xs">{l("Success Rate")}</div>
+          <div class="stat-value text-lg text-success">{@stats.success_rate || 0}%</div>
+          <div class="stat-desc">{@stats.successful || 0} {l("successful")}</div>
         </div>
-        <div class="stat-title text-xs">{l("Success Rate")}</div>
-        <div class="stat-value text-lg text-success">{@stats.success_rate || 0}%</div>
-        <div class="stat-desc">{@stats.successful || 0} {l("successful")}</div>
-      </div>
 
-      <!-- Issues -->
-      <div class="stat">
-        <div class={"stat-figure " <> if(@stats.failed > 0, do: "text-error", else: "text-base-content/40")}>
-          <#Icon iconify="ph:exclamation-mark-duotone" class="w-6 h-6" />
+        <!-- Issues -->
+        <div class="stat">
+          <div class={"stat-figure " <> if(@stats.failed > 0, do: "text-error", else: "text-base-content/40")}>
+            <#Icon iconify="ph:exclamation-mark-duotone" class="w-6 h-6" />
+          </div>
+          <div class="stat-title text-xs">{l("Issues")}</div>
+          <div class={"stat-value text-lg " <> if(@stats.failed > 0, do: "text-error", else: "text-base-content/60")}>
+            {@stats.failed || 0}
+          </div>
+          <div class="stat-desc">{l("Need attention")}</div>
         </div>
-        <div class="stat-title text-xs">{l("Issues")}</div>
-        <div class={"stat-value text-lg " <> if(@stats.failed > 0, do: "text-error", else: "text-base-content/60")}>
-          {@stats.failed || 0}
-        </div>
-        <div class="stat-desc">{l("Need attention")}</div>
       </div>
-    </div>
     </div>
 
     <!-- Operation Type Breakdown -->
     <div :if={@stats.by_operation} class="my-6">
       <h3 class="text-sm font-medium text-base-content/70 mb-3">{l("Import Type")}</h3>
       <div class="stats bg-base-200 border-base-content/10 border w-full">
-        <div :for={{operation, count} <- @stats.by_operation} class={"stat " <> if(count == 0, do: "opacity-70", else: "")}>
+        <div
+          :for={{operation, count} <- @stats.by_operation}
+          class={"stat " <> if(count == 0, do: "opacity-70", else: "")}
+        >
           <div class={"stat-title text-xs truncate " <> if(count == 0, do: "text-base-content/60", else: "")}>
             {operation}
           </div>
@@ -96,12 +102,12 @@
     <div class="text-base-content/60">
       <#Icon iconify="heroicons:document-text" class="w-12 h-12 mx-auto mb-4 opacity-50" />
       <p class="text-lg font-medium mb-2">{l("No import history")}</p>
-      <p>{l("Your import jobs will appear here once you start importing data.")}</p>
+      <p>{l("Your import history will appear here once you start importing data.")}</p>
     </div>
   </div>
 
   <div :if={@jobs != []} class="space-y-4">
-  <div class="text-sm text-base-content/70 mb-2">{l("Showing the most recent %{count} import jobs.", count: length(@jobs))}</div>
+    <div class="text-sm text-base-content/70 mb-2">{l("Showing the most recent %{count} import items.", count: length(@jobs))}</div>
     <div :for={job <- @jobs} class="card bg-base-100 border border-base-content/10 shadow-sm">
       <div class="p-4 pb-0 flex items-start justify-between card-title">
         <div class="flex flex-col gap-1 mb-2 w-full">
@@ -110,37 +116,35 @@
                 {job[:context]}</span>
             </h3>
             <div class="text-right text-xs text-base-content/50 flex items-center gap-2">
-            <div class={"badge badge-sm badge-soft " <> elem(format_state(job.state), 1)}>
-              {elem(format_state(job.state), 0)}
+              <div class={"badge badge-sm badge-soft " <> elem(format_state(job.state), 1)}>
+                {elem(format_state(job.state), 0)}
+              </div>
+              #{job.id}
             </div>
-            #{job.id}
-          </div>
           </div>
           <div class="text-sm text-base-content/70 space-y-1">
-              <p :if={job.identifier && !job.target_user}>
-                <span class="font-medium">{l("Importing:")}</span>
-                <span class="font-mono">{job.identifier}</span>
-              </p>
+            <p :if={job.identifier && !job.target_user}>
+              <span class="font-medium">{l("Importing:")}</span>
+              <span class="font-mono">{job.identifier}</span>
+            </p>
 
+            <p class="font-normal">
+              <span class="text-sm">{l("Started ")}</span>
+              <time datetime={DatesTimes.format(job.inserted_at)}>{DatesTimes.date_from_now(job.inserted_at)}</time>
+              <span :if={job.completed_at} class="text-sm">
+                · {l("Completed ")} <time datetime={DatesTimes.format(job.completed_at)}>{DatesTimes.date_from_now(job.completed_at)}</time></span>
+            </p>
 
-              <p class="font-normal">
-                <span class="text-sm">{l("Started ")}</span>
-                <time datetime={DatesTimes.format(job.inserted_at)}>{DatesTimes.date_from_now(job.inserted_at)}</time>
-                <span :if={job.completed_at} class="text-sm"> · {l("Completed ")} <time datetime={DatesTimes.format(job.completed_at)}>{DatesTimes.date_from_now(job.completed_at)}</time></span>
-              </p>
-
-              <p :if={job.attempt > 1}>
-                <span class="text-sm">{l("Attempts:")}</span>
-                {job.attempt} / {job.max_attempts}
-              </p>
+            <p :if={job.attempt > 1}>
+              <span class="text-sm">{l("Attempts:")}</span>
+              {job.attempt} / {job.max_attempts}
+            </p>
           </div>
         </div>
-         
       </div>
       <div class="card-body p-4">
         <div class="flex items-start justify-between">
           <div class="flex-1">
-
             <div :if={job.target_user} class="">
               <StatelessComponent
                 module={maybe_component(Bonfire.UI.Me.ProfileItemLive)}
@@ -152,8 +156,6 @@
                 show_controls={[:follow, :add_to_circles, :blocks]}
               />
             </div>
-
-            
           </div>
         </div>
 
