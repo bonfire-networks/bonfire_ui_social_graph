@@ -15,7 +15,7 @@ defmodule Bonfire.UI.Social.Graph.ImportLive do
        page_title: "Blocks Import"
      )
      |> allow_upload(:file,
-       accept: ~w(.csv),
+       accept: ~w(.csv .json),
        # TODO: make extensions & size configurable
        max_file_size: 500_000_000,
        max_entries: 1,
@@ -91,27 +91,28 @@ defmodule Bonfire.UI.Social.Graph.ImportLive do
   def options_list(:instance_wide, :blocks, _),
     do: %{
       "" => nil,
-      l("List of profiles/instances to ghost (instance-wide)") => :ghosts,
-      l("List of profiles/instances to silence (instance-wide)") => :silences,
-      l("List of profiles/instances to block (instance-wide)") => :blocks
+      l("List of profiles/instances to ghost instance-wide (CSV)") => :ghosts,
+      l("List of profiles/instances to silence instance-wide (CSV)") => :silences,
+      l("List of profiles/instances to block instance-wide (CSV)") => :blocks
     }
 
   def options_list(_, type, federating?) when type == :blocks or federating? == false,
     do: %{
       "" => nil,
-      l("List of profiles/instances to ghost") => :ghosts,
-      l("List of profiles/instances to silence") => :silences,
-      l("List of profiles/instances to block") => :blocks
+      l("List of profiles/instances to ghost (CSV)") => :ghosts,
+      l("List of profiles/instances to silence (CSV)") => :silences,
+      l("List of profiles/instances to block (CSV)") => :blocks
     }
 
   def options_list(_, _, _),
     do: %{
       "" => nil,
-      l("List of profiles to follow") => :following,
-      l("List of profiles/instances to ghost") => :ghosts,
-      l("List of profiles/instances to silence") => :silences,
-      l("List of profiles/instances to block") => :blocks,
-      l("List of bookmarks") => :bookmarks,
-      l("List of lists/circles and their members") => :circles
+      l("List of profiles to follow (CSV)") => :following,
+      l("Outbox with posts and boosts to re-boost (JSON)") => :outbox,
+      l("List of bookmarks (CSV)") => :bookmarks,
+      l("List of lists/circles and their members (CSV))") => :circles,
+      l("List of profiles/instances to ghost (CSV)") => :ghosts,
+      l("List of profiles/instances to silence (CSV)") => :silences,
+      l("List of profiles/instances to block (CSV)") => :blocks
     }
 end
