@@ -302,9 +302,7 @@ defmodule Bonfire.UI.Social.Graph.ImportHistoryLive do
   defp count_pre_existing_jobs(jobs) do
     jobs
     |> Enum.count(fn job ->
-      op_code = get_in(job.args, ["op"])
-      error = format_errors(job.errors)
-      op_code == "circles_import" and error == "Subject id: has already been taken"
+      format_errors(job.errors) in pre_existing_data_errors()
     end)
   end
 
@@ -332,9 +330,17 @@ defmodule Bonfire.UI.Social.Graph.ImportHistoryLive do
       # l("Silence") => 0,
       # l("Ghost") => 0,
       l("Bookmark") => 0,
+      l("Like") => 0,
+      l("Boost") => 0,
       l("Circle") => 0
     }
   end
+
+  defp pre_existing_data_errors,
+    do: [
+      "Subject id: has already been taken",
+      "You already boosted this."
+    ]
 
   defp format_job(job, users_by_identifier \\ %{}) do
     op_code = get_in(job.args, ["op"])
@@ -352,8 +358,7 @@ defmodule Bonfire.UI.Social.Graph.ImportHistoryLive do
       end
 
     # Special case: circles_import + "Subject id: has already been taken"
-    is_pre_existing =
-      op_code == "circles_import" and extracted_error == "Subject id: has already been taken"
+    is_pre_existing = extracted_error in pre_existing_data_errors()
 
     %{
       id: job.id,
@@ -379,6 +384,9 @@ defmodule Bonfire.UI.Social.Graph.ImportHistoryLive do
   defp format_operation_type("bookmarks_import"), do: l("Bookmark")
   defp format_operation_type("circles_import"), do: l("Circle")
   defp format_operation_type("outbox_import"), do: l("Posts & boosts")
+  defp format_operation_type("outbox_creations_import"), do: l("Posts/Creations")
+  defp format_operation_type("likes_import"), do: l("Like")
+  defp format_operation_type("boosts_import"), do: l("Boost")
   defp format_operation_type(other), do: other
 
   defp format_state("pre_existing"), do: {l("Pre-existing"), "text-info/70"}

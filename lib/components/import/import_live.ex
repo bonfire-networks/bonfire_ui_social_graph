@@ -108,8 +108,10 @@ defmodule Bonfire.UI.Social.Graph.ImportLive do
     do: %{
       "" => nil,
       l("List of profiles to follow (CSV)") => :following,
-      l("Outbox with posts and boosts to re-boost (JSON)") => :outbox,
+      l("Posts/creations in outbox (JSON)") => :outbox,
       l("List of bookmarks (CSV)") => :bookmarks,
+      l("List of likes (CSV)") => :likes,
+      l("List of boosts (CSV)") => :boosts,
       l("List of lists/circles and their members (CSV))") => :circles,
       l("List of profiles/instances to ghost (CSV)") => :ghosts,
       l("List of profiles/instances to silence (CSV)") => :silences,
