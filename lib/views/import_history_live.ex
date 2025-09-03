@@ -131,6 +131,41 @@ defmodule Bonfire.UI.Social.Graph.ImportHistoryLive do
      )}
   end
 
+  def handle_event("cancel_jobs_by_type", %{"type" => type}, socket) do
+    current_user = current_user(socket)
+    user_id = id(current_user)
+    # |> type_to_op_code()
+    op_code = type
+
+    try do
+      {count, _} =
+        Bonfire.Common.ObanHelpers.cancel_jobs_by_type_for_user(repo(), user_id, op_code)
+
+      # Refresh data
+      jobs =
+        fetch_import_jobs(
+          current_user,
+          socket.assigns.filters,
+          socket.assigns.current_page,
+          socket.assigns.per_page
+        )
+
+      stats = fetch_import_stats(current_user)
+
+      {:noreply,
+       socket
+       |> assign(jobs: jobs, stats: stats)
+       |> assign_flash(
+         :info,
+         l("Cancelled %{count} jobs of type %{type}", count: count, type: type)
+       )}
+    rescue
+      error ->
+        debug(error, "Error cancelling jobs")
+        {:noreply, assign_error(socket, l("Failed to cancel jobs"))}
+    end
+  end
+
   defp filter_params(filters, page) do
     %{}
     |> Enums.maybe_put("type", filters.type)
@@ -143,8 +178,9 @@ defmodule Bonfire.UI.Social.Graph.ImportHistoryLive do
     offset = (page - 1) * per_page
 
     try do
+      # Bonfire.Common.ObanHelpers.list_jobs_queue_for_user(repo(), "import", 
       jobs =
-        Bonfire.Common.ObanHelpers.list_jobs_queue_for_user(repo(), "import", user_id,
+        Bonfire.Common.ObanHelpers.list_jobs_for_user(repo(), user_id,
           # Fetch one extra to check if there are more
           limit: per_page + 1,
           offset: offset,
@@ -157,7 +193,7 @@ defmodule Bonfire.UI.Social.Graph.ImportHistoryLive do
       # Extract all identifiers for batch user lookup
       identifiers =
         jobs
-        |> Enum.map(&get_in(&1.args, ["identifier"]))
+        |> Enum.map(&identifier/1)
         |> debug("idds")
         |> Enum.reject(&is_nil/1)
         |> Enum.uniq()
@@ -173,6 +209,10 @@ defmodule Bonfire.UI.Social.Graph.ImportHistoryLive do
         []
     end
   end
+
+  defp identifier(%{"identifier" => identifier}), do: identifier
+  defp identifier(%{"id" => identifier}), do: identifier
+  defp identifier(_), do: nil
 
   defp apply_filters(jobs, %{type: nil, status: nil}), do: jobs
 
@@ -241,15 +281,13 @@ defmodule Bonfire.UI.Social.Graph.ImportHistoryLive do
     try do
       # Get basic job state counts
       basic_stats =
-        Bonfire.Common.ObanHelpers.job_stats_for_user(repo(), "import", user_id)
+        Bonfire.Common.ObanHelpers.job_stats_for_user(repo(), user_id)
         |> debug("actual_job_states_in_db")
 
       # Get all jobs for detailed analysis
       # FIXME: do this with DB query rather than fetching all and doing in memory
       jobs =
-        Bonfire.Common.ObanHelpers.list_jobs_queue_for_user(repo(), "import", user_id,
-          limit: 10000
-        )
+        Bonfire.Common.ObanHelpers.list_jobs_for_user(repo(), user_id, limit: 10000)
 
       # Debug: show actual states that exist
       actual_states = jobs |> Enum.map(& &1.state) |> Enum.uniq() |> debug("unique_states_found")
@@ -326,13 +364,13 @@ defmodule Bonfire.UI.Social.Graph.ImportHistoryLive do
   defp all_operation_types do
     %{
       l("Follow") => 0,
-      l("Block") => 0,
+      l("Block") => 0
       # l("Silence") => 0,
       # l("Ghost") => 0,
-      l("Bookmark") => 0,
-      l("Like") => 0,
-      l("Boost") => 0,
-      l("Circle") => 0
+      # l("Bookmark") => 0,
+      # l("Like") => 0,
+      # l("Boost") => 0,
+      # l("Circle") => 0
     }
   end
 
@@ -345,7 +383,7 @@ defmodule Bonfire.UI.Social.Graph.ImportHistoryLive do
   defp format_job(job, users_by_identifier \\ %{}) do
     op_code = get_in(job.args, ["op"])
     op_type = op_code |> format_operation_type()
-    identifier = get_in(job.args, ["identifier"])
+    identifier = identifier(job.args)
     target_user = if identifier, do: Map.get(users_by_identifier, identifier)
 
     # Extract error for special handling
@@ -387,6 +425,7 @@ defmodule Bonfire.UI.Social.Graph.ImportHistoryLive do
   defp format_operation_type("outbox_creations_import"), do: l("Posts/Creations")
   defp format_operation_type("likes_import"), do: l("Like")
   defp format_operation_type("boosts_import"), do: l("Boost")
+  defp format_operation_type("fetch_remote"), do: l("Fetch Content")
   defp format_operation_type(other), do: other
 
   defp format_state("pre_existing"), do: {l("Pre-existing"), "text-info/70"}
