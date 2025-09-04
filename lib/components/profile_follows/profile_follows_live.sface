@@ -1,5 +1,15 @@
 <div>
   {!-- <#slot {@header} /> --}
+      <StatefulComponent
+        module={maybe_component(Bonfire.UI.Me.ProfileHeroFullLive, @user)}
+        id="profile_character"
+        user={@user}
+        boundary_preset={@boundary_preset}
+        selected_tab={@selected_tab}
+        follows_me={@follows_me || false}
+        character_type={:user}
+        path={@path}
+      />
   <div class={
     "grid items-start grid-cols-1 mt-2 md:mt-0",
     "max-w-[680px] mx-auto": !current_user_id(@__context__)
@@ -7,7 +17,7 @@
     <main class="flex flex-col bg-base-100">
       <div
         role="tablist"
-        class="tabs pt-8 justify-evenly w-full tabs-border border-b border-base-content/10"
+        class="tabs justify-evenly w-full tabs-border border-b border-base-content/10"
       >
         <LinkLive
           to={"/@#{e(@user, :character, :username, "")}/followers"}

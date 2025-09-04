@@ -17,6 +17,7 @@ defmodule Bonfire.UI.Social.Graph.ProfileFollowsLive do
   prop page_info, :any, default: nil
   prop showing_within, :atom, default: :profile
   prop hide_tabs, :boolean, default: false
-
+  prop boundary_preset, :any, default: nil
+  prop follows_me, :boolean, default: false
   # slot header
 end
