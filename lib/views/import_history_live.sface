@@ -206,7 +206,7 @@
                 profile={e(job.target_user, :profile, nil)}
                 wrapper_class="flex items-start gap-3 profile-item group"
                 avatar_class="w-12 h-12"
-                show_controls={[:follow, :add_to_circles, :blocks]}
+                show_controls={[:follow, :follows_me, :add_to_circles, :blocks]}
               />
             </div>
           </div>
