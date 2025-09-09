@@ -54,7 +54,7 @@
             </div>
           </div>
 
-          <div class="grid grid-cols-2 lg:grid-cols-3 mt-5 items-center gap-3">
+          <div class="grid grid-cols-2 mt-5 items-center gap-3">
             <div class="flex flex-col gap-1 flex-1" phx-update="ignore">
               <h2 class="font-semibold text-sm">{l("Import type")}</h2>
               <Select field={:type} class="select" options={options_list(@scope, @type, federating?)} />
@@ -68,9 +68,8 @@
                 <Phoenix.Component.live_file_input upload={@uploads.file} class="file-input" />
               </label>
             </div>
-
-            <button class="btn lg:mt-6 btn-primary">{l("Upload")}</button>
           </div>
+          <button class="btn mt-3 w-full btn-primary">{l("Upload")}</button>
         </div>
       </Form>
 
