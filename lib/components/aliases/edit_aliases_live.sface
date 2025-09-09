@@ -18,7 +18,7 @@
           >
             <StatelessComponent
               module={maybe_component(Bonfire.UI.Me.ProfileItemLive)}
-              show_controls={[]}
+              show_controls={[:follows_me]}
               character={character}
               profile={profile}
               class="btn btn-circle btn-ghost btn-sm"
