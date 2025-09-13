@@ -3,9 +3,9 @@
       fallback_return: false
     )}
     {#match federating?}
-      <!-- <div class="flex items-center justify-between mb-4 mx-4">
+      {!-- <div class="flex items-center justify-between mb-4 mx-4">
         <h2 class="text-lg font-semibold">{l("Import Data")}</h2>
-      </div> -->
+      </div> --}
 
       <Form multipart submit="import" change="validate" opts={"phx-target": @myself}>
         <div class="p-4">
