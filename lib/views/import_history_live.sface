@@ -201,7 +201,7 @@
             <div :if={job.target_user} class="">
               <StatelessComponent
                 module={maybe_component(Bonfire.UI.Me.ProfileItemLive)}
-                parent_id={"import_history_#{job.id}"}
+                parent_id={deterministic_dom_id(__MODULE__, job.id, "import_history", nil)}
                 character={job.target_user}
                 profile={e(job.target_user, :profile, nil)}
                 wrapper_class="flex items-start gap-3 profile-item group"
