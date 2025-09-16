@@ -12,8 +12,6 @@ defmodule Bonfire.UI.Social.Graph.Routes do
       scope "/", Bonfire.UI.Social.Graph do
         pipe_through(:browser)
         pipe_through(:user_required)
-
-        live("/settings/import_history", ImportHistoryLive, as: :import_history)
       end
 
       # pages you need an account to view
