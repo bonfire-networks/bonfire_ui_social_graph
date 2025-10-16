@@ -1,5 +1,5 @@
 defmodule Bonfire.Social.Notifications.FollowsTest do
-  use Bonfire.UI.Social.Graph.ConnCase, async: true
+  use Bonfire.UI.Social.Graph.ConnCase, async: System.get_env("TEST_UI_ASYNC") != "no"
   alias Bonfire.Social.Graph.Follows
 
   describe "show" do
@@ -48,7 +48,7 @@ defmodule Bonfire.Social.Notifications.FollowsTest do
 end
 
 # defmodule Bonfire.Social.Notifications.Follows.Test do
-#   use Bonfire.UI.Social.Graph.ConnCase, async: true
+#   use Bonfire.UI.Social.Graph.ConnCase, async: System.get_env("TEST_UI_ASYNC") != "no"
 #   alias Bonfire.Social.Fake
 #   alias Bonfire.Posts
 #   alias Bonfire.Social.Graph.Follows
