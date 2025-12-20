@@ -98,6 +98,7 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
             "followed" ->
               Bonfire.Social.Graph.Follows.list_followed(
                 user,
+                exclude_object_types: [Bonfire.Tag.Hashtag],
                 pagination: pagination,
                 current_user: current_user
               )
@@ -245,6 +246,7 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
     followed =
       Bonfire.Social.Graph.Follows.list_followed(
         user,
+        exclude_object_types: [Bonfire.Tag.Hashtag],
         pagination: pagination,
         current_user: current_user
       )
