@@ -4,7 +4,7 @@
       disabled
       class={
         e(@class, "btn w-full flex-1 btn-sm"),
-        "normal-case btn-disabled"
+        "normal-case bt-sm btn-disabled"
       }
     >{if !@hide_text, do: l("loading..."), else: "..."}</button>
   {#elseif !@my_follow or @my_follow == :skip}
@@ -18,7 +18,7 @@
       phx-disable-with={l("loading...")}
       phx-value-id={@object_id || Enum.join(@object_ids, ",")}
       class={
-        e(@class, "btn w-full btn-outline border-base-content/30 flex-1"),
+        e(@class, "btn w-full btn-sm btn-outline border-base-content/30 flex-1"),
         "btn-disabled": @disabled
       }
     >
@@ -51,7 +51,7 @@
           "btn-disabled": @disabled
         }
       >
-        <#Icon solid="UserRemove" :if={!@hide_icon} class={e(@icon_class, "w-4 h-4 shrink-0")} />
+        <#Icon iconify="ph:user-plus-duotone" :if={!@hide_icon} class={e(@icon_class, "w-4 h-4 shrink-0")} />
 
         <span
           :if={!@hide_text}
@@ -94,7 +94,7 @@
             }
           >
             <div class="flex items-center gap-2">
-              <#Icon solid="UserRemove" :if={!@hide_icon} class={e(@icon_class, "w-4 h-4 shrink-0")} />
+              <#Icon iconify="ph:user-minus-duotone" :if={!@hide_icon} class={e(@icon_class, "w-4 h-4 shrink-0")} />
 
               <span
                 :if={!@hide_text}
