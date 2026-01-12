@@ -17,7 +17,7 @@
     <main class="flex flex-col bg-base-100">
       <div
         role="tablist"
-        class="tabs justify-evenly w-full tabs-border border-b border-base-content/10"
+        class="tabs justify-evenly w-full tabs-border border-b border-base-content/20"
       >
         <LinkLive
           to={"/@#{e(@user, :character, :username, "")}/followers"}
