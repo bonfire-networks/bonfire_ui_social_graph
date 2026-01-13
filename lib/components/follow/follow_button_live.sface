@@ -1,5 +1,7 @@
 <div class={@container_class} title={@title}>
-  {#if @my_follow == nil and current_user_id(@__context__)}
+  {#if current_user_id(@__context__)==@object_id}
+  <!-- skip myself -->
+  {#elseif @my_follow == nil and current_user_id(@__context__)}
     <button
       disabled
       class={
