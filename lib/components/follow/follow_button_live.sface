@@ -1,6 +1,6 @@
 <div class={@container_class} title={@title}>
-  {#if current_user_id(@__context__)==@object_id}
-  <!-- skip myself -->
+  {#if current_user_id(@__context__) == @object_id}
+    <!-- skip myself -->
   {#elseif @my_follow == nil and current_user_id(@__context__)}
     <button
       disabled
@@ -53,7 +53,11 @@
           "btn-disabled": @disabled
         }
       >
-        <#Icon iconify="ph:user-plus-duotone" :if={!@hide_icon} class={e(@icon_class, "w-4 h-4 shrink-0")} />
+        <#Icon
+          iconify="ph:user-plus-duotone"
+          :if={!@hide_icon}
+          class={e(@icon_class, "w-4 h-4 shrink-0")}
+        />
 
         <span
           :if={!@hide_text}
@@ -96,7 +100,11 @@
             }
           >
             <div class="flex items-center gap-2">
-              <#Icon iconify="ph:user-minus-duotone" :if={!@hide_icon} class={e(@icon_class, "w-4 h-4 shrink-0")} />
+              <#Icon
+                iconify="ph:user-minus-duotone"
+                :if={!@hide_icon}
+                class={e(@icon_class, "w-4 h-4 shrink-0")}
+              />
 
               <span
                 :if={!@hide_text}
