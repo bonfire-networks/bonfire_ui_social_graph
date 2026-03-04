@@ -17,7 +17,7 @@
     <main class="flex flex-col bg-base-100">
       <div
         role="tablist"
-        class="tabs justify-evenly w-full tabs-border border-b border-base-content/20"
+        class="tabs justify-evenly w-full tabs-border border-b border-base-content/10"
       >
         <LinkLive
           to={"/@#{e(@user, :character, :username, "")}/followers"}
@@ -44,7 +44,7 @@
       /> --}
       <div :if={@selected_tab in ["requested", "followed"]}>
         <div class="flow-root">
-          <ul class="divide-y divide-base-content/20">
+          <ul class="divide-y divide-base-content/10">
             {#for follow <- @feed}
               <li class="p-4">
                 <StatelessComponent
@@ -81,7 +81,7 @@
 
       <div :if={@selected_tab in ["requests", "followers", "members"]}>
         <div class="flow-root bg-base-100">
-          <ul class="divide-y divide-base-content/20">
+          <ul class="divide-y divide-base-content/10">
             {#for follow <- @feed}
               <li class="p-4">
                 <StatelessComponent
