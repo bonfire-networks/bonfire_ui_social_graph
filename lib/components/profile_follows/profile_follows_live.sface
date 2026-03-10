@@ -14,7 +14,7 @@
     "grid items-start grid-cols-1 mt-2 md:mt-0",
     "max-w-[680px] mx-auto": !current_user_id(@__context__)
   }>
-    <main class="flex flex-col bg-base-100 lg:rounded-2xl shadow outline outline-base-content/10">
+    <main class="flex flex-col bg-base-200 lg:bg-base-100 lg:rounded-2xl shadow outline outline-base-content/10">
       <div
         role="tablist"
         class="tabs justify-evenly w-full tabs-border border-b border-base-content/10"
