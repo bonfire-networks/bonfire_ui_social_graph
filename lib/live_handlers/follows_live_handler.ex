@@ -173,12 +173,6 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
   end
 
   defp do_preload(list_of_components, list_of_ids, current_user) do
-    # # Here we're checking if the user is ghosted / silenced by user or instance
-    # ghosted? = Bonfire.Boundaries.Blocks.is_blocked?(List.first(list_of_ids), :ghost, current_user: current_user) |> debug("ghosted?")
-    # ghosted_instance_wide? = Bonfire.Boundaries.Blocks.is_blocked?(List.first(list_of_ids), :ghost, :instance_wide) |> debug("ghosted_instance_wide?")
-    # silenced? = Bonfire.Boundaries.Blocks.is_blocked?(List.first(list_of_ids), :silence, current_user: current_user) |> debug("silenced?")
-    # silenced_instance_wide? = Bonfire.Boundaries.Blocks.is_blocked?(List.first(list_of_ids), :silence, :instance_wide) |> debug("silenced_instance_wide?")
-
     my_follows =
       if current_user,
         do:
