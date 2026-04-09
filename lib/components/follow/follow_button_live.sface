@@ -16,6 +16,7 @@
       id={@id}
       :on-click={if !@disabled, do: "Bonfire.Social.Graph.Follows:follow"}
       href={if !current_user_id(@__context__), do: "#{@path}/follow"}
+      target="_top"
       rel="noopener noreferrer"
       phx-disable-with={l("loading...")}
       phx-value-id={@object_id || Enum.join(@object_ids, ",")}
