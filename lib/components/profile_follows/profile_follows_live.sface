@@ -54,7 +54,12 @@
                   lg
                   avatar_class="w-12 h-12 rounded-full bg-base-300"
                   character={e(follow, :edge, :object, :character, nil)}
-                  parent_id="profile_follows"
+                  parent_id={deterministic_dom_id(
+                    __MODULE__,
+                    id(e(follow, :edge, :object, nil)),
+                    "profile_follows",
+                    @parent_id
+                  )}
                 />
               </li>
             {#else}
@@ -95,7 +100,12 @@
                     do: [:follow, :accept],
                     else: []}
                   activity_id={id(follow)}
-                  parent_id="profile_follows"
+                  parent_id={deterministic_dom_id(
+                    __MODULE__,
+                    id(e(follow, :edge, :subject, nil)),
+                    "profile_follows",
+                    @parent_id
+                  )}
                 />
               </li>
             {#else}

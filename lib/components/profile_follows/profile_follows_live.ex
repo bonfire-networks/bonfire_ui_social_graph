@@ -11,6 +11,7 @@ defmodule Bonfire.UI.Social.Graph.ProfileFollowsLive do
       )
   )
 
+  prop parent_id, :string, default: nil
   prop user, :map, default: []
   prop selected_tab, :any, default: nil
   prop feed, :list, default: []
