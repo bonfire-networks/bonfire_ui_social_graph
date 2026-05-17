@@ -231,7 +231,12 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
   def load_network("followed" = tab, user, params, socket) do
     user = user || e(assigns(socket), :user, nil)
     current_user = current_user(socket)
-    pagination = input_to_atoms(params)
+
+    pagination =
+      Bonfire.UI.Common.LiveHandlers.unwrap_namespaced_params(
+        params,
+        "Bonfire.Social.Graph.Follows"
+      )
 
     requested =
       if id(user) == id(current_user), do: list_requested(current_user, pagination), else: []
@@ -259,7 +264,12 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
   def load_network("followers" = tab, user, params, socket) do
     user = user || e(assigns(socket), :user, nil)
     current_user = current_user(socket)
-    pagination = input_to_atoms(params)
+
+    pagination =
+      Bonfire.UI.Common.LiveHandlers.unwrap_namespaced_params(
+        params,
+        "Bonfire.Social.Graph.Follows"
+      )
 
     requests =
       if id(user) == id(current_user), do: list_requests(current_user, pagination), else: []
@@ -285,7 +295,12 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
   def load_network(tab, user, params, socket) when tab in ["members"] do
     user = user || e(assigns(socket), :user, nil)
     current_user = current_user(socket)
-    pagination = input_to_atoms(params)
+
+    pagination =
+      Bonfire.UI.Common.LiveHandlers.unwrap_namespaced_params(
+        params,
+        "Bonfire.Social.Graph.Follows"
+      )
 
     requests =
       if id(user) == id(current_user), do: list_requests(current_user, pagination), else: []
