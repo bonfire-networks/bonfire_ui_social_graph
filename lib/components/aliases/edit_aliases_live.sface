@@ -82,7 +82,7 @@
                 <input name="actor" type="text" placeholder="type here...">
               </label>
             </div>
-            <button class="btn btn-neutral join-item">{"Add alias"}</button>
+            <button class="btn btn-neutral join-item">{l("Add alias")}</button>
           </div>
         </fieldset>
       </div>
