@@ -79,7 +79,7 @@
                       <input
                         name="password"
                         type="password"
-                        placeholder="Type here"
+                        placeholder={l("Type here")}
                         class="input input-bordered w-full"
                       />
 
@@ -108,7 +108,7 @@
             <input
               name="actor"
               type="text"
-              placeholder="Enter your fediverse username@domain.name"
+              placeholder={l("Enter your fediverse username@domain.name")}
               class="input input-bordered w-full"
             />
 
