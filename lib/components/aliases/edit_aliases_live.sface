@@ -1,9 +1,9 @@
 <div class="p-4">
   <div class="flex items-center gap-4 justify-between">
     <div class="flex flex-col gap-1">
-      <div class="font-semibold text-sm">{l("Other profiles")}</div>
+      <div class="font-bold">{l("Other accounts & links")}</div>
       <div class="text-sm text-base-content/70">{l(
-          "You can indicate your different profiles across the fediverse (including on other apps like Peertube, Pixelfed or Mobilizon), or your personal website, blogs, etc"
+          "Link your accounts on other Bonfire instances or any fediverse platforms (Mastodon, PeerTube, Pixelfed, Mobilizon…), as well as your personal website, blog, etc. They'll be shown on your profile so people can easily follow your online presence. Any ActivityPub-compatible username should work, and you can add plain URL links for anything else."
         )}</div>
     </div>
   </div>
@@ -54,7 +54,7 @@
           </li>
         </ul>
       {#else}
-        <div class="alert alert-info alert-soft w-full">{l("You don't have any alias yet")}</div>
+        {!-- <div class="alert alert-info alert-soft w-full">{l("You don't have any other profiles yet")}</div> --}
       {/if}
     </div>
 
@@ -64,7 +64,6 @@
         <StatelessComponent
           module={maybe_component(Bonfire.OpenID.Web.SignInWithExternalProvidersLive)}
           source={:add}
-          label=""
         />
 
         <fieldset class="fieldset">
@@ -72,17 +71,10 @@
           <div class="join">
             <div>
               <label class="input validator join-item">
-                <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g
-                    stroke-linejoin="round"
-                    stroke-linecap="round"
-                    stroke-width="2.5"
-                    fill="none"
-                    stroke="currentColor"
-                  ><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></g></svg>
-                <input name="actor" type="text" placeholder={l("Type here")}>
+                <input name="actor" type="text" placeholder={l("Enter here")}>
               </label>
             </div>
-            <button class="btn btn-neutral join-item">{l("Add alias")}</button>
+            <button class="btn btn-neutral join-item">{l("Add")}</button>
           </div>
         </fieldset>
       </div>

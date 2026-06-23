@@ -208,9 +208,19 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
 
     list_of_components
     |> Map.new(fn component ->
+      # disabled when we can't federate a follow to this target given the current federation
+      # mode — covers disabled/manual AND allowlist-only (a remote actor that isn't allowlisted).
+      # See bonfire-app#647. Degrades to allowed when the federate extension is off.
       disable? =
-        (Bonfire.Social.is_local?(component.object) == false and
-           !Bonfire.Social.federating?(current_user))
+        !maybe_apply(
+          Bonfire.Federate.ActivityPub,
+          :interaction_allowed?,
+          # NOTE: opts MUST be a wrapped list — `[a, b, key: val]` would make the 3rd arg the
+          # tuple `{:key, val}`, not opts, so interaction_allowed?/3's `is_list(opts)` guard fails
+          # and it crashes (then `fallback_return: true` silently re-enables the button — #647).
+          [current_user, component.object, [skip_block_check: true]],
+          fallback_return: true
+        )
         |> debug("disable follow?")
 
       {component.component_id,
@@ -219,7 +229,13 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
            if(Map.get(my_requests, component.object_id), do: :requested) ||
              Map.get(my_follows, component.object_id) || component.previous_value || false,
          disabled: disable?,
-         title: if(disable?, do: l("Cannot follow a remote actor when federation is disabled."))
+         title:
+           if(disable?,
+             do:
+               l(
+                 "You can't interact with this user due to this instance's current federation settings."
+               )
+           )
          # ghosted?: ghosted?,
          # ghosted_instance_wide?: ghosted_instance_wide?,
          # silenced?: silenced?,
