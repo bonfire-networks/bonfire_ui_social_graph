@@ -21,16 +21,12 @@
       phx-disable-with={l("loading...")}
       phx-value-id={@object_id || Enum.join(@object_ids, ",")}
       class={
-        e(@class, "btn w-full btn-sm btn-outline border-base-content/30 flex-1"),
+        e(@class, "btn w-full btn-sm btn-primary"),
         "btn-disabled": @disabled
       }
     >
       <div class="flex items-center gap-2">
-        <#Icon
-          iconify="ph:user-plus-duotone"
-          :if={!@hide_icon}
-          class={e(@icon_class, "w-4 h-4 shrink-0")}
-        />
+        <#Icon iconify="ph:user-plus-fill" :if={!@hide_icon} class={e(@icon_class, "w-4 h-4 shrink-0")} />
         <span :if={!@hide_text} class={"truncate ellipsis", "ml-2": !@hide_icon}>
           {@verb || if @follows_me, do: l("Follow back"), else: l("Follow")} {@label}</span>
       </div>
@@ -54,11 +50,7 @@
           "btn-disabled": @disabled
         }
       >
-        <#Icon
-          iconify="ph:user-plus-duotone"
-          :if={!@hide_icon}
-          class={e(@icon_class, "w-4 h-4 shrink-0")}
-        />
+        <#Icon iconify="ph:user-plus-fill" :if={!@hide_icon} class={e(@icon_class, "w-4 h-4 shrink-0")} />
 
         <span
           :if={!@hide_text}
@@ -102,7 +94,7 @@
           >
             <div class="flex items-center gap-2">
               <#Icon
-                iconify="ph:user-minus-duotone"
+                iconify="ph:user-minus-fill"
                 :if={!@hide_icon}
                 class={e(@icon_class, "w-4 h-4 shrink-0")}
               />

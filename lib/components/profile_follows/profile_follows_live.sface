@@ -36,7 +36,7 @@
         selected_tab={@selected_tab}
         class="flex justify-between w-full border-b bg-base-100 tabs border-base-content border-opacity-20"
         tab_class="flex flex-1 pt-4 text-base capitalize hover:bg-base-content hover:bg-opacity-10 place-content-center lined_tab"
-        item_class="text-base-content/60 text-sm pb-4 border-b border-transparent font-medium"
+        item_class="text-muted text-sm pb-4 border-b border-transparent font-medium"
         path_prefix={"/@#{e(@user, :character, :username, "")}/"}
         tabs={if current_user_id(@__context__) == id(@user),
           do: Config.get([:ui, @showing_within, :network], followers: l("Followers")),
@@ -44,7 +44,7 @@
       /> --}
       <div :if={@selected_tab in ["requested", "followed"]}>
         <div class="flow-root">
-          <ul class="divide-y divide-base-content/10">
+          <ul class="divide-hair divide-secondary">
             {#for follow <- @feed}
               <li class="p-4">
                 <StatelessComponent
@@ -78,14 +78,14 @@
           hide_if_no_more
         >
           <:if_no_more>
-            <p class="text-center text-base-content/70 py-4">{l("That's everyone!")}</p>
+            <p class="text-center text-muted py-4">{l("That's everyone!")}</p>
           </:if_no_more>
         </Bonfire.UI.Common.LoadMoreLive>
       </div>
 
       <div :if={@selected_tab in ["requests", "followers", "members"]}>
         <div class="flow-root bg-base-100">
-          <ul class="divide-y divide-base-content/10">
+          <ul class="divide-hair divide-secondary">
             {#for follow <- @feed}
               <li class="p-4">
                 <StatelessComponent
@@ -123,7 +123,7 @@
           hide_if_no_more
         >
           <:if_no_more>
-            <p class="text-center text-base-content/70 py-4">{l("That's everyone!")}</p>
+            <p class="text-center text-muted py-4">{l("That's everyone!")}</p>
           </:if_no_more>
         </Bonfire.UI.Common.LoadMoreLive>
       </div>

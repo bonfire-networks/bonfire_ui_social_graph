@@ -2,7 +2,7 @@
   <div class="flex items-center gap-4 justify-between">
     <div class="flex flex-col gap-1">
       <div class="font-bold">{l("Other accounts & links")}</div>
-      <div class="text-sm text-base-content/70">{l(
+      <div class="text-sm text-muted">{l(
           "Link your accounts on other Bonfire instances or any fediverse platforms (Mastodon, PeerTube, Pixelfed, Mobilizon…), as well as your personal website, blog, etc. They'll be shown on your profile so people can easily follow your online presence. Any ActivityPub-compatible username should work, and you can add plain URL links for anything else."
         )}</div>
     </div>
@@ -11,7 +11,7 @@
     <div class="form-control mt-4 w-full">
       {#if @aliases != []}
         <!-- <div class="text-sm">{l("Existing aliases")}</div> -->
-        <ul class="flex flex-col divide-y divide-base-content/10">
+        <ul class="flex flex-col   divide-hair divide-secondary">
           <li
             class="flex p-3 items-center justify-between"
             :for={%{edge: %{object: %{id: id, profile: profile, character: %{id: _} = character}}} <- @aliases}
