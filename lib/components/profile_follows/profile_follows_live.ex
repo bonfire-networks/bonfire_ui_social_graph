@@ -1,7 +1,7 @@
 defmodule Bonfire.UI.Social.Graph.ProfileFollowsLive do
   use Bonfire.UI.Common.Web, :stateless_component
 
-  declare_extension("UI for social graph",
+  declare_extension(l("UI for social graph"),
     icon: "fluent:people-community-48-filled",
     emoji: "🫂",
     exclude_from_nav: true,
