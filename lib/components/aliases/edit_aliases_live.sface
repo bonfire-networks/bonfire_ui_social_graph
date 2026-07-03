@@ -60,7 +60,7 @@
 
     <form phx-submit="Bonfire.Social.Graph.Aliases:add_alias">
       <div class="form-control mt-6 w-full">
-        <div class="font-semibold text-sm mb-2">{l("Add an external account")}</div>
+        <div class="font-medium text-sm mb-2">{l("Add an external account")}</div>
         <StatelessComponent
           module={maybe_component(Bonfire.OpenID.Web.SignInWithExternalProvidersLive)}
           source={:add}
