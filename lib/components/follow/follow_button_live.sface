@@ -15,7 +15,7 @@
       data-id="follow"
       id={@id}
       :on-click={if !@disabled, do: "Bonfire.Social.Graph.Follows:follow"}
-      href={if !current_user_id(@__context__), do: "#{@path}/follow"}
+      href={if !current_user_id(@__context__), do: "#{@path}/interact/follow"}
       target="_top"
       rel="noopener noreferrer"
       phx-disable-with={l("loading...")}
