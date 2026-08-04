@@ -60,7 +60,7 @@
                     character={character}
                     profile={profile}
                     class="btn btn-square btn-ghost btn-sm"
-                    avatar_class="w-10 h-10 rounded-full"
+                    avatar_class="w-10 h-10 rounded-full mx-auto"
                   />
                   {#if federating? == false}
                     <div class="badge badge-warning">{l("Migration is not currently available (because federation is turned off)")}</div>
