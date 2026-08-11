@@ -28,7 +28,7 @@
       <div class="flex items-center gap-2">
         <#Icon iconify="ph:user-plus-fill" :if={!@hide_icon} class={e(@icon_class, "w-4 h-4 shrink-0")} />
         <span :if={!@hide_text} class={"truncate ellipsis", "ml-2": !@hide_icon}>
-          {@verb || if @follows_me, do: l("Follow back"), else: l("Follow")} {@label}</span>
+          {@verb || if @follows_me, do: l("Follow back"), else: lc("verb: action", "Follow", [], :bonfire_social_graph)} {@label}</span>
       </div>
     </a>
   {#elseif @my_follow == :requested}
@@ -112,7 +112,7 @@
                 id={"#{@id}-hover-text"}
                 class={"hidden truncate ellipsis", "ml-2": !@hide_icon}
               >
-                {@verb_undo || l("Unfollow")}
+                {@verb_undo || lc("verb: action", "Unfollow", [], :bonfire_social_graph)}
               </span>
             </div>
           </a>

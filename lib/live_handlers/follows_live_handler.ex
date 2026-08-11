@@ -21,7 +21,7 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
         my_follow: true
       ]
 
-      with {:ok, current_user} <- current_user_or_remote_interaction(socket, l("follow"), id),
+      with {:ok, current_user} <- current_user_or_remote_interaction(socket, "follow", id),
            {:ok, _follow} <- Bonfire.Social.Graph.Follows.follow(current_user, id) do
         ComponentID.send_assigns(
           e(params, "component", Bonfire.UI.Social.Graph.FollowButtonLive),
