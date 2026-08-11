@@ -53,6 +53,61 @@ defmodule Bonfire.Social.Notifications.FollowsTest do
       |> assert_has_or_open_browser("[data-role=subject]", text: someone.profile.name)
       |> refute_has("[data-role=subject]", text: me.profile.name)
     end
+
+    test "clicking Accept on a follow request does not show an error notification" do
+      # the Accept button sends only `phx-value-id`, and the handler's `else` branch flashes
+      # "There was an error when trying to accept the request" for any unexpected shape — even
+      # when the accept itself succeeded.
+      # Reported against an instance with federation OFF; tests default it ON (config/test.exs),
+      # and `Follows.accept/2`'s third step calls `Requests.ap_publish_activity/3` regardless
+      Process.put(:federating, false)
+
+      some_account = fake_account!()
+      someone = fake_user!(some_account, %{}, request_before_follow: true)
+      me = fake_user!(some_account, %{}, request_before_follow: true)
+
+      assert {:ok, _request} = Follows.follow(someone, me)
+      assert true == Follows.requested?(someone, me)
+
+      conn(user: me, account: some_account)
+      |> visit("/notifications")
+      |> wait_async()
+      |> click_button("Accept")
+      |> wait_async()
+      |> refute_has("[data-id=flash_error]")
+
+      assert true == Follows.following?(someone, me)
+      assert false == Follows.requested?(someone, me)
+    end
+
+    test "the Accept button does not stay clickable after a successful accept" do
+      # the handler's success branch returns `{:noreply, socket}` without re-assigning anything,
+      # so the Accept button stays on screen. Nothing visibly happens, the user clicks again, and
+      # the second accept fails (the Request edge was deleted by the first) — producing an error
+      # notification for a request that WAS accepted
+      Process.put(:federating, false)
+
+      some_account = fake_account!()
+      someone = fake_user!(some_account, %{}, request_before_follow: true)
+      me = fake_user!(some_account, %{}, request_before_follow: true)
+
+      assert {:ok, _request} = Follows.follow(someone, me)
+      assert true == Follows.requested?(someone, me)
+
+      conn(user: me, account: some_account)
+      |> visit("/notifications")
+      |> wait_async()
+      |> assert_has("button", text: "Accept")
+      |> click_button("Accept")
+      |> wait_async()
+      # gone, so it cannot be clicked a second time — which used to hit `{:error, :not_found}`
+      # (the Request edge is deleted by the first accept) and flash an error for an accept
+      # that had actually succeeded
+      |> refute_has("button", text: "Accept")
+      |> refute_has("[data-id=flash_error]")
+
+      assert true == Follows.following?(someone, me)
+    end
   end
 
   describe "DO NOT show" do
