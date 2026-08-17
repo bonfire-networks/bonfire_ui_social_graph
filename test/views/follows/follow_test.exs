@@ -19,7 +19,7 @@ defmodule Bonfire.UI.Social.Graph.FollowsTest do
     # Navigate to their profile
     conn
     |> visit(Bonfire.Common.URIs.path(someone))
-    |> click_link("[data-id=follow]", "Follow")
+    |> click_button("[data-id=follow]", "Follow")
     # |> PhoenixTest.open_browser()
     |> assert_has("[data-id=unfollow]", text: "Following")
 
@@ -39,7 +39,7 @@ defmodule Bonfire.UI.Social.Graph.FollowsTest do
     # Navigate to their profile and unfollow
     conn
     |> visit(Bonfire.Common.URIs.path(someone))
-    |> click_link("[data-id=unfollow]", "Following")
+    |> click_button("[data-id=unfollow]", "Following")
     |> assert_has("[data-id=follow]", text: "Follow")
 
     # Verify that we're no longer following

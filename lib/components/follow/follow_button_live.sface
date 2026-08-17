@@ -2,123 +2,117 @@
   {#if current_user_id(@__context__) == @object_id}
     <!-- skip myself -->
   {#elseif @my_follow == nil and current_user_id(@__context__)}
-    <button
-      disabled
-      class={
-        e(@class, "btn w-full flex-1 btn-sm"),
-        "normal-case bt-sm btn-disabled"
-      }
-    >{if !@hide_text, do: l("loading..."), else: "..."}</button>
+    {!-- reserve the button's footprint while update_many resolves the follow state,
+         instead of a "loading..." button that shifts layout when it resolves --}
+    <div class="skeleton h-8 w-24 rounded-full" aria-hidden="true" />
   {#elseif !@my_follow or @my_follow == :skip}
-    <a
-      data-cid={@id}
-      data-id="follow"
-      id={@id}
-      :on-click={if !@disabled, do: "Bonfire.Social.Graph.Follows:follow"}
-      href={if !current_user_id(@__context__), do: "#{@path}/interact/follow"}
-      target="_top"
-      rel="noopener noreferrer"
-      phx-disable-with={l("loading...")}
-      phx-value-id={@object_id || Enum.join(@object_ids, ",")}
-      class={
-        e(@class, "btn w-full btn-sm btn-primary"),
-        "btn-disabled": @disabled
-      }
-    >
-      <div class="flex items-center gap-2">
+    {#if current_user_id(@__context__)}
+      <button
+        type="button"
+        data-cid={@id}
+        data-id="follow"
+        id={@id}
+        :on-click={if !@disabled, do: "Bonfire.Social.Graph.Follows:follow"}
+        phx-value-id={@object_id || Enum.join(@object_ids, ",")}
+        class={
+          e(@class, "btn w-full btn-sm btn-primary"),
+          "opaque-on-click",
+          "btn-disabled": @disabled
+        }
+      >
         <#Icon iconify="ph:user-plus-fill" :if={!@hide_icon} class={e(@icon_class, "w-4 h-4 shrink-0")} />
-        <span :if={!@hide_text} class={"truncate ellipsis", "ml-2": !@hide_icon}>
+        <span :if={!@hide_text} class="truncate">
           {@verb ||
             if @follows_me,
               do: l("Follow back"),
               else: lc("verb: action", "Follow", [], :bonfire_social_graph)} {@label}</span>
-      </div>
-    </a>
+      </button>
+    {#else}
+      <a
+        data-cid={@id}
+        data-id="follow"
+        id={@id}
+        href={if !@disabled, do: "#{@path}/interact/follow"}
+        target="_top"
+        rel="noopener noreferrer"
+        aria-disabled={if @disabled, do: "true"}
+        class={
+          e(@class, "btn w-full btn-sm btn-primary"),
+          "btn-disabled": @disabled
+        }
+      >
+        <#Icon iconify="ph:user-plus-fill" :if={!@hide_icon} class={e(@icon_class, "w-4 h-4 shrink-0")} />
+        <span :if={!@hide_text} class="truncate">
+          {@verb ||
+            if @follows_me,
+              do: l("Follow back"),
+              else: lc("verb: action", "Follow", [], :bonfire_social_graph)} {@label}</span>
+      </a>
+    {/if}
   {#elseif @my_follow == :requested}
     <span class="w-full flex-1">
-      <a
+      <button
+        type="button"
         data-cid={@id}
         data-id="unfollow"
         id={@id}
         :on-click={if !@disabled, do: "Bonfire.Social.Graph.Follows:unfollow"}
         phx-value-id={@object_id || Enum.join(@object_ids, ",")}
-        phx-mouseover={JS.add_class("!btn-error", to: @id)
-        |> JS.add_class("hidden", to: "##{@id}-requested-normal-text")
-        |> JS.remove_class("hidden", to: "##{@id}-requested-hover-text")}
-        phx-mouseout={JS.remove_class("!btn-error", to: @id)
-        |> JS.remove_class("hidden", to: "##{@id}-requested-normal-text")
-        |> JS.add_class("hidden", to: "##{@id}-requested-hover-text")}
         class={
-          e(@class, "btn btn-info btn-sm btn-soft"),
+          e(@class_already, e(@class, "btn btn-info btn-sm btn-soft")),
+          "group follow-hover-danger opaque-on-click",
           "btn-disabled": @disabled
         }
       >
         <#Icon iconify="ph:user-plus-fill" :if={!@hide_icon} class={e(@icon_class, "w-4 h-4 shrink-0")} />
-
-        <span
-          :if={!@hide_text}
-          id={"#{@id}-requested-normal-text"}
-          class={"truncate ellipsis", "ml-2": !@hide_icon}
-        >
-          {l("Requested")} {@label}
-        </span>
-
-        <span
-          :if={!@hide_text}
-          id={"#{@id}-requested-hover-text"}
-          class={"hidden truncate ellipsis", "ml-2": !@hide_icon}
-        >
-          {l("Cancel")}
-        </span>
-      </a>
+        {#if !@hide_text}
+          {!-- both labels share one grid cell so the button keeps the width of the
+               longer one: no layout shift (or hover flicker) when they swap --}
+          <span class="grid text-center">
+            <span class="col-start-1 row-start-1 truncate group-hover:invisible">
+              {l("Requested")} {@label}
+            </span>
+            <span class="col-start-1 row-start-1 invisible truncate group-hover:visible" aria-hidden="true">
+              {l("Cancel")}
+            </span>
+          </span>
+        {/if}
+      </button>
     </span>
   {#else}
     {!-- already following --}
     {#case "#{@verb_already || if @follows_me, do: l("Mutual follower"), else: l("Following")} #{@label}"}
       {#match btn_text}
         <span class="w-full flex-1">
-          <a
-            phx-disable-with={l("loading...")}
+          <button
+            type="button"
             id={@id}
             data-cid={@id}
             data-id="unfollow"
             :on-click={if !@disabled, do: "Bonfire.Social.Graph.Follows:unfollow"}
             phx-value-id={@object_id || Enum.join(@object_ids, ",")}
-            phx-mouseover={JS.add_class("!btn-error", to: @id)
-            |> JS.add_class("hidden", to: "##{@id}-normal-text")
-            |> JS.remove_class("hidden", to: "##{@id}-hover-text")}
-            phx-mouseout={JS.remove_class("!btn-error", to: @id)
-            |> JS.remove_class("hidden", to: "##{@id}-normal-text")
-            |> JS.add_class("hidden", to: "##{@id}-hover-text")}
             class={
-              e(@class, "btn w-full btn-sm btn-primary btn-soft flex-1"),
+              e(@class_already, e(@class, "btn w-full btn-sm btn-primary btn-soft flex-1")),
+              "group follow-hover-danger opaque-on-click",
               "btn-disabled": @disabled
             }
           >
-            <div class="flex items-center gap-2">
-              <#Icon
-                iconify="ph:user-minus-fill"
-                :if={!@hide_icon}
-                class={e(@icon_class, "w-4 h-4 shrink-0")}
-              />
-
-              <span
-                :if={!@hide_text}
-                id={"#{@id}-normal-text"}
-                class={"truncate ellipsis", "ml-2": !@hide_icon}
-              >
-                {btn_text}
+            <#Icon
+              iconify="ph:user-minus-fill"
+              :if={!@hide_icon}
+              class={e(@icon_class, "w-4 h-4 shrink-0")}
+            />
+            {#if !@hide_text}
+              <span class="grid text-center">
+                <span class="col-start-1 row-start-1 truncate group-hover:invisible">
+                  {btn_text}
+                </span>
+                <span class="col-start-1 row-start-1 invisible truncate group-hover:visible" aria-hidden="true">
+                  {@verb_undo || lc("verb: action", "Unfollow", [], :bonfire_social_graph)}
+                </span>
               </span>
-
-              <span
-                :if={!@hide_text}
-                id={"#{@id}-hover-text"}
-                class={"hidden truncate ellipsis", "ml-2": !@hide_icon}
-              >
-                {@verb_undo || lc("verb: action", "Unfollow", [], :bonfire_social_graph)}
-              </span>
-            </div>
-          </a>
+            {/if}
+          </button>
         </span>
     {/case}
 
