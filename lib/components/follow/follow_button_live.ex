@@ -8,6 +8,7 @@ defmodule Bonfire.UI.Social.Graph.FollowButtonLive do
 
   prop container_class, :css_class, default: "flex items-center gap-2 w-full"
   prop class, :css_class, default: nil
+  prop loading_class, :css_class, default: "skeleton h-8 w-24 rounded-full"
 
   @doc "Class for the already-following/requested states (falls back to `class`), so the resting CTA can be solid while the done-state is quieter"
   prop class_already, :css_class, default: nil

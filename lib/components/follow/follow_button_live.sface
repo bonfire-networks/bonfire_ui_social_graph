@@ -4,7 +4,7 @@
   {#elseif @my_follow == nil and current_user_id(@__context__)}
     {!-- reserve the button's footprint while update_many resolves the follow state,
          instead of a "loading..." button that shifts layout when it resolves --}
-    <div class="skeleton h-8 w-24 rounded-full" aria-hidden="true" />
+    <div class={@loading_class} aria-hidden="true" />
   {#elseif !@my_follow or @my_follow == :skip}
     {#if current_user_id(@__context__)}
       <button
