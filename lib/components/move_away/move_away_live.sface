@@ -73,10 +73,11 @@
                       <input name="user" value={id} type="hidden">
 
                       <div class="text-base mt-5 font-medium">{l("Enter password to confirm")}</div>
-                      <label class="label">
+                      <label class="label" for="move_away_password_input">
                         <span class="label-text">{l("For security purposes please enter the password of your account")}</span>
                       </label>
                       <input
+                        id="move_away_password_input"
                         name="password"
                         type="password"
                         placeholder={l("Type here")}
