@@ -13,8 +13,11 @@ defmodule Bonfire.UI.Social.Graph.FollowButtonLive do
   @doc "Class for the already-following/requested states (falls back to `class`), so the resting CTA can be solid while the done-state is quieter"
   prop class_already, :css_class, default: nil
   prop icon_class, :css_class, default: nil
+  prop icon, :string, default: "ph:user-plus-fill"
+  prop icon_already, :string, default: "ph:user-minus-fill"
   prop label, :string, default: nil
   prop title, :any, default: nil
+  prop title_already, :any, default: nil
   prop disabled, :boolean, default: false
   prop hide_icon, :boolean, default: false
   prop hide_text, :boolean, default: false

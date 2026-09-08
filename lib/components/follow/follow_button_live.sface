@@ -1,4 +1,9 @@
-<div class={@container_class} title={@title}>
+<div
+  class={@container_class, "tooltip": @title || @title_already}
+  data-tip={if @my_follow == true or @my_follow == :requested,
+    do: @title_already || @title,
+    else: @title}
+>
   {#if current_user_id(@__context__) == @object_id}
     <!-- skip myself -->
   {#elseif @my_follow == nil and current_user_id(@__context__)}
@@ -14,13 +19,26 @@
         id={@id}
         :on-click={if !@disabled, do: "Bonfire.Social.Graph.Follows:follow"}
         phx-value-id={@object_id || Enum.join(@object_ids, ",")}
+        aria-pressed="false"
+        aria-label={if @hide_text,
+          do:
+            @verb ||
+              if(@follows_me,
+                do: l("Follow back"),
+                else: lc("verb: action", "Follow", [], :bonfire_social_graph)
+              )}
         class={
           e(@class, "btn w-full btn-sm btn-primary"),
           "opaque-on-click",
           "btn-disabled": @disabled
         }
       >
-        <#Icon iconify="ph:user-plus-fill" :if={!@hide_icon} class={e(@icon_class, "w-4 h-4 shrink-0")} />
+        <Iconify.iconify
+          :if={!@hide_icon}
+          icon={@icon}
+          class={e(@icon_class, "w-4 h-4 shrink-0")}
+          aria-hidden="true"
+        />
         <span :if={!@hide_text} class="truncate">
           {@verb ||
             if @follows_me,
@@ -36,12 +54,24 @@
         target="_top"
         rel="noopener noreferrer"
         aria-disabled={if @disabled, do: "true"}
+        aria-label={if @hide_text,
+          do:
+            @verb ||
+              if(@follows_me,
+                do: l("Follow back"),
+                else: lc("verb: action", "Follow", [], :bonfire_social_graph)
+              )}
         class={
           e(@class, "btn w-full btn-sm btn-primary"),
           "btn-disabled": @disabled
         }
       >
-        <#Icon iconify="ph:user-plus-fill" :if={!@hide_icon} class={e(@icon_class, "w-4 h-4 shrink-0")} />
+        <Iconify.iconify
+          :if={!@hide_icon}
+          icon={@icon}
+          class={e(@icon_class, "w-4 h-4 shrink-0")}
+          aria-hidden="true"
+        />
         <span :if={!@hide_text} class="truncate">
           {@verb ||
             if @follows_me,
@@ -58,13 +88,19 @@
         id={@id}
         :on-click={if !@disabled, do: "Bonfire.Social.Graph.Follows:unfollow"}
         phx-value-id={@object_id || Enum.join(@object_ids, ",")}
+        aria-label={if @hide_text, do: l("Cancel follow request")}
         class={
           e(@class_already, e(@class, "btn btn-info btn-sm btn-soft")),
           "group follow-hover-danger opaque-on-click",
           "btn-disabled": @disabled
         }
       >
-        <#Icon iconify="ph:user-plus-fill" :if={!@hide_icon} class={e(@icon_class, "w-4 h-4 shrink-0")} />
+        <Iconify.iconify
+          :if={!@hide_icon}
+          icon={@icon}
+          class={e(@icon_class, "w-4 h-4 shrink-0")}
+          aria-hidden="true"
+        />
         {#if !@hide_text}
           {!-- both labels share one grid cell so the button keeps the width of the
                longer one: no layout shift (or hover flicker) when they swap --}
@@ -91,16 +127,20 @@
             data-id="unfollow"
             :on-click={if !@disabled, do: "Bonfire.Social.Graph.Follows:unfollow"}
             phx-value-id={@object_id || Enum.join(@object_ids, ",")}
+            aria-pressed="true"
+            aria-label={if @hide_text,
+              do: @verb_undo || lc("verb: action", "Unfollow", [], :bonfire_social_graph)}
             class={
               e(@class_already, e(@class, "btn w-full btn-sm btn-primary btn-soft flex-1")),
               "group follow-hover-danger opaque-on-click",
               "btn-disabled": @disabled
             }
           >
-            <#Icon
-              iconify="ph:user-minus-fill"
+            <Iconify.iconify
+              icon={@icon_already}
               :if={!@hide_icon}
               class={e(@icon_class, "w-4 h-4 shrink-0")}
+              aria-hidden="true"
             />
             {#if !@hide_text}
               <span class="grid text-center">
