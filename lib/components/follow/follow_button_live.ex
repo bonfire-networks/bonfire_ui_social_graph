@@ -4,6 +4,9 @@ defmodule Bonfire.UI.Social.Graph.FollowButtonLive do
   prop object_id, :string, default: nil
   prop object_ids, :list, default: []
 
+  @doc "The object itself, when the caller already has it. Optional: several callers pass only `object_id`, and the event carries an id either way. Declared because passing it lets the handler skip re-fetching what the parent already loaded, `Follows.follow/3` answers both `:follow` and `:request` in one query when given a struct, but has to fetch first when given an id."
+  prop object, :any, default: nil
+
   prop path, :string, default: nil
 
   prop container_class, :css_class, default: "flex items-center gap-2 w-full"

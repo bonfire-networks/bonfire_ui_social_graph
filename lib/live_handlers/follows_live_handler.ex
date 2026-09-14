@@ -21,8 +21,11 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
         my_follow: true
       ]
 
+      # the event can only carry an id, but this runs with the button's own socket, so use the object when the caller passed one: `Follows.follow/3` answers `:follow` and `:request` in a single query for a struct, and has to fetch first for an id
+      object = e(assigns(socket), :object, nil) || id
+
       with {:ok, current_user} <- current_user_or_remote_interaction(socket, "follow", id),
-           {:ok, _follow} <- Bonfire.Social.Graph.Follows.follow(current_user, id) do
+           {:ok, _follow} <- Bonfire.Social.Graph.Follows.follow(current_user, object) do
         ComponentID.send_assigns(
           e(params, "component", Bonfire.UI.Social.Graph.FollowButtonLive),
           id,
