@@ -158,4 +158,16 @@
 
     <#slot {@if_followed} />
   {/if}
+
+  {!-- "notify me about their new posts", for callers that ask for it: once following, or straight away for someone local, whose posts are here whether anyone follows them or not (a remote person's only reach us through a follow) --}
+  <StatefulComponent
+    :if={@with_bell and not is_nil(current_user_id(@__context__)) and
+      current_user_id(@__context__) != @object_id and
+      (@my_follow not in [nil, false, :skip, :requested] or
+         (not is_nil(@object) and
+            Bonfire.Me.Integration.is_local?(@object)))}
+    module={maybe_component(Bonfire.Notify.Web.BellButtonLive, @__context__)}
+    id={"#{@id}_bell"}
+    object={@object || @object_id}
+  />
 </div>
