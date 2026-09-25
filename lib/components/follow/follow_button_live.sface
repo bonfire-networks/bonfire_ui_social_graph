@@ -50,7 +50,7 @@
         data-cid={@id}
         data-id="follow"
         id={@id}
-        href={if !@disabled, do: "#{@path}/interact/follow"}
+        href={if !@disabled, do: guest_follow_path(@path, @object_id)}
         target="_top"
         rel="noopener noreferrer"
         aria-disabled={if @disabled, do: "true"}
