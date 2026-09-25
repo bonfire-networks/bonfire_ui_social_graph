@@ -36,6 +36,12 @@ defmodule Bonfire.UI.Social.Graph.FollowButtonLive do
   @doc "Also show the bell (\"notify me about their new posts\") beside the button, when `bonfire_notify` is enabled: once following, or straight away for a local person or group, whose posts are here without a follow."
   prop with_bell, :boolean, default: true
 
+  @doc "Optional button classes for the bell rendered beside this follow button."
+  prop bell_class, :css_class, default: nil
+
+  @doc "Optional button classes for the enabled bell state."
+  prop bell_class_enabled, :css_class, default: nil
+
   slot if_followed
 
   def update_many(assigns_sockets),
