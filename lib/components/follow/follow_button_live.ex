@@ -44,6 +44,18 @@ defmodule Bonfire.UI.Social.Graph.FollowButtonLive do
 
   slot if_followed
 
+  @doc "Where a guest's Follow goes: the remote-follow deeplink when another server can reach the object, otherwise signing in here, the only way to follow something that does not federate."
+  def guest_follow_path(path, object_id) do
+    if maybe_apply(
+         Bonfire.Federate.ActivityPub.AdapterUtils,
+         :remotely_reachable?,
+         [object_id],
+         fallback_return: false
+       ) == true,
+      do: "#{path}/interact/follow",
+      else: "/login?go=#{path}"
+  end
+
   def update_many(assigns_sockets),
     do:
       Bonfire.Social.Graph.Follows.LiveHandler.update_many(assigns_sockets,
