@@ -52,8 +52,8 @@ defmodule Bonfire.UI.Social.Graph.FollowButtonLive do
          [object_id],
          fallback_return: false
        ) == true,
-      do: "#{path}/interact/follow",
-      else: "/login?go=#{path}"
+       do: "#{path}/interact/follow",
+       else: "/login?go=#{path}"
   end
 
   def update_many(assigns_sockets),

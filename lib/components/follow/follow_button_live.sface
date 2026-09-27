@@ -1,6 +1,4 @@
-<div
-  class={@container_class}
->
+<div class={@container_class}>
   {#if current_user_id(@__context__) == @object_id}
     <!-- skip myself -->
   {#elseif @my_follow == nil and current_user_id(@__context__)}
@@ -29,7 +27,7 @@
           e(@class, "btn w-full btn-sm btn-primary"),
           "opaque-on-click",
           "btn-disabled": @disabled,
-          "tooltip": @title
+          tooltip: @title
         }
       >
         <Iconify.iconify
@@ -64,7 +62,7 @@
         class={
           e(@class, "btn w-full btn-sm btn-primary"),
           "btn-disabled": @disabled,
-          "tooltip": @title
+          tooltip: @title
         }
       >
         <Iconify.iconify
@@ -95,7 +93,7 @@
           e(@class_already, e(@class, "btn btn-info btn-sm btn-soft")),
           "group follow-hover-danger opaque-on-click",
           "btn-disabled": @disabled,
-          "tooltip": @title || @title_already
+          tooltip: @title || @title_already
         }
       >
         <Iconify.iconify
@@ -138,7 +136,7 @@
               e(@class_already, e(@class, "btn w-full btn-sm btn-primary btn-soft flex-1")),
               "group follow-hover-danger opaque-on-click",
               "btn-disabled": @disabled,
-              "tooltip": @title || @title_already
+              tooltip: @title || @title_already
             }
           >
             <Iconify.iconify

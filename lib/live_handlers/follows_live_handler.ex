@@ -71,6 +71,19 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
     end
   end
 
+  # how a follow or join request is declined: it is only marked ignored, nothing is sent to the requester, who can ask again
+  def handle_event("ignore", %{"id" => request_id} = _params, socket) do
+    with {:ok, _request} <-
+           Bonfire.Social.Graph.Follows.ignore(request_id,
+             current_user: current_user_required!(socket)
+           ) do
+      {:noreply, assign_flash(socket, :info, l("Request ignored"))}
+    else
+      e ->
+        error(e, l("There was an error when trying to ignore the request"))
+    end
+  end
+
   def handle_event("accept", %{"user_id" => user_id} = _params, socket) do
     # debug(socket)
 

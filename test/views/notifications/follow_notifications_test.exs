@@ -24,6 +24,29 @@ defmodule Bonfire.Social.Notifications.FollowsTest do
       |> assert_has("[data-id=feed] article", text: "followed")
     end
 
+    test "a follow shows who is following me, with their bio, not my own card" do
+      some_account = fake_account!()
+      someone = fake_user!(some_account)
+      me = fake_user!(some_account)
+
+      assert {:ok, _follow} = Follows.follow(someone, me)
+
+      # the positive first: the follower has a bio to show
+      bio = Bonfire.Common.Text.text_only(someone.profile.summary)
+      assert is_binary(bio) and bio != ""
+
+      conn(user: me, account: some_account)
+      |> visit("/notifications")
+      |> wait_async()
+      |> assert_has("[data-id=feed] article [data-role=character]",
+        text: "@#{someone.character.username}"
+      )
+      |> assert_has("[data-id=feed] article", text: String.slice(bio, 0, 30))
+      |> refute_has("[data-id=feed] article [data-role=character]",
+        text: "@#{me.character.username}"
+      )
+    end
+
     @tag :skip_ci
     test "when I accept a follow request, the live-pushed activity shows the follower (not me) as the actor" do
       # Regression for bonfire-app#1907/#1906/#1659: clicking Accept live-pushes the new Follow
@@ -78,6 +101,28 @@ defmodule Bonfire.Social.Notifications.FollowsTest do
 
       assert true == Follows.following?(someone, me)
       assert false == Follows.requested?(someone, me)
+    end
+
+    # declining is ignoring: the request is only marked ignored and nothing is sent, so they are neither following nor still pending
+    test "clicking Ignore on a follow request declines it without an error" do
+      Process.put(:federating, false)
+
+      some_account = fake_account!()
+      someone = fake_user!(some_account, %{}, request_before_follow: true)
+      me = fake_user!(some_account, %{}, request_before_follow: true)
+
+      assert {:ok, _request} = Follows.follow(someone, me)
+      assert true == Follows.requested?(someone, me), "control: pending before the ignore"
+
+      conn(user: me, account: some_account)
+      |> visit("/notifications")
+      |> wait_async()
+      |> click_button("Ignore")
+      |> wait_async()
+      |> refute_has("[data-id=flash_error]")
+
+      assert false == Follows.following?(someone, me)
+      assert false == Follows.requested?(someone, me), "ignored, so no longer pending"
     end
 
     test "the Accept button does not stay clickable after a successful accept" do
