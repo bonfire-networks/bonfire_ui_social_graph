@@ -57,6 +57,40 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
     end
   end
 
+  def handle_event("review_join_request", %{"request_id" => request_id, "decision" => decision}, socket)
+      when decision in ["approve", "decline"] do
+    current_user = current_user_required!(socket)
+
+    {decide, status} =
+      if decision == "approve",
+        do: {&Bonfire.Social.Graph.Follows.accept/2, :approved},
+        else: {&Bonfire.Social.Graph.Follows.ignore/2, :declined}
+
+    case decide.(request_id, current_user: current_user) do
+      {:ok, _} ->
+        socket = assign(socket, request_status: status, request_error: nil)
+
+        {:noreply,
+         if(status == :approved,
+           do: assign_flash(socket, :info, l("Join request approved")),
+           else: socket
+         )}
+
+      reason ->
+        error(reason, "Could not review join request")
+
+        # a request decided, withdrawn or replaced elsewhere can't be retried, so show where it stands now
+        case current_request_status(request_id, current_user) do
+          status when status == socket.assigns.request_status ->
+            {:noreply,
+             assign(socket, request_error: l("Could not update this request. Please try again."))}
+
+          status ->
+            {:noreply, assign(socket, request_status: status, request_error: nil)}
+        end
+    end
+  end
+
   def handle_event("accept", %{"id" => request_id} = _params, socket) do
     # debug(socket)
 
@@ -405,5 +439,11 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
       fallback_return: []
     )
     |> debug("requests")
+  end
+
+  defp current_request_status(request_id, current_user) do
+    Bonfire.Social.Requests.list_by_ids([request_id], current_user: current_user)
+    |> List.first()
+    |> Bonfire.Social.Requests.review_status() || :unavailable
   end
 end
