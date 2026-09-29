@@ -57,7 +57,11 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
     end
   end
 
-  def handle_event("review_join_request", %{"request_id" => request_id, "decision" => decision}, socket)
+  def handle_event(
+        "review_join_request",
+        %{"request_id" => request_id, "decision" => decision},
+        socket
+      )
       when decision in ["approve", "decline"] do
     current_user = current_user_required!(socket)
 
