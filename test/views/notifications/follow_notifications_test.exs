@@ -47,7 +47,7 @@ defmodule Bonfire.Social.Notifications.FollowsTest do
       )
     end
 
-    @tag :skip_ci
+    @tag Bonfire.Common.RuntimeConfig.skip_in_ci()
     test "when I accept a follow request, the live-pushed activity shows the follower (not me) as the actor" do
       # Regression for bonfire-app#1907/#1906/#1659: clicking Accept live-pushes the new Follow
       # activity to my open notifications via PubSub. Its actor must be the FOLLOWER — with the
