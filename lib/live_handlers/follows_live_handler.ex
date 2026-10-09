@@ -222,7 +222,9 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
       component_id: assigns.id,
       object: object,
       object_id: e(assigns, :object_id, nil) || uid(object),
-      previous_value: e(assigns, :my_follow, nil)
+      previous_value: e(assigns, :my_follow, nil),
+      # the caller's tooltip, kept unless following is disabled (see `do_preload/3`)
+      title: e(assigns, :title, nil)
     }
   end
 
@@ -288,7 +290,8 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
              do:
                l(
                  "You can't interact with this user due to this instance's current federation settings."
-               )
+               ),
+             else: component[:title]
            )
          # ghosted?: ghosted?,
          # ghosted_instance_wide?: ghosted_instance_wide?,

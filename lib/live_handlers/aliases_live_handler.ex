@@ -26,7 +26,8 @@ defmodule Bonfire.Social.Graph.Aliases.LiveHandler do
         :noreply,
         socket
         |> assign_flash(:info, params["ok_msg"] || l("Added the alias!"))
-        |> redirect_to(current_url(socket))
+        # TODO: assign the changed aliases instead of reloading the page
+        |> redirect_to(current_url(socket), reload: true)
       }
     end
   end
@@ -54,7 +55,8 @@ defmodule Bonfire.Social.Graph.Aliases.LiveHandler do
         :noreply,
         socket
         |> assign_flash(:info, params["ok_msg"] || l("Removed the alias!"))
-        |> redirect_to(current_url(socket))
+        # TODO: assign the changed aliases instead of reloading the page
+        |> redirect_to(current_url(socket), reload: true)
       }
     end
   end
@@ -83,7 +85,8 @@ defmodule Bonfire.Social.Graph.Aliases.LiveHandler do
               username: Bonfire.Me.Characters.display_username(current_user, true, true)
             )
           )
-          |> redirect_to(current_url(socket))
+          # TODO: show the error without reloading the page
+          |> redirect_to(current_url(socket), reload: true)
         }
     end
   end
