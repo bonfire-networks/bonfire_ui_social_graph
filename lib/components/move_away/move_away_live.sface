@@ -6,14 +6,14 @@
       <div x-on:click="open = !open" class="flex items-center justify-between cursor-pointer">
         <div class="flex flex-col gap-1">
           <div class="text-md font-bold">{l("Move to a different profile")}</div>
-          <div class="text-sm font-light text-muted">{l(
+          <div class="text-sm font-normal text-muted">{l(
               "You can redirect this profile to a different one, and bring your followers with you (works across instances, and also with other fediverse tools like Mastodon or Akkoma)"
             )}</div>
         </div>
-        <button type="button" x-cloak class="rounded btn btn-square btn-sm btn-ghost" x-show="open">
+        <button type="button" x-cloak class="btn btn-square btn-sm btn-ghost" x-show="open">
           <#Icon iconify="carbon:chevron-down" class="w-4 h-4 text-muted" />
         </button>
-        <button type="button" class="rounded btn btn-square btn-sm btn-ghost" x-show="!open">
+        <button type="button" class="btn btn-square btn-sm btn-ghost" x-show="!open">
           <#Icon iconify="carbon:chevron-up-fill" class="w-4 h-4 text-muted" />
         </button>
       </div>
@@ -101,7 +101,7 @@
                       </:open_btn>
 
                       <:action_btns>
-                        <button class="normal-case rounded btn btn-error btn-sm">
+                        <button class="normal-case btn btn-error btn-sm">
                           <span class="truncate ellipsis">{l("Migrate to %{username} now", username: e(character, :username, nil) || e(profile, :name, ""))}</span>
                         </button>
                       </:action_btns>
