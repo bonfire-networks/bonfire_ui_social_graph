@@ -33,7 +33,7 @@
         <Iconify.iconify
           :if={!@hide_icon}
           icon={@icon}
-          class={e(@icon_class, "w-4 h-4 shrink-0")}
+          class={e(@icon_class, "size-4 shrink-0")}
           aria-hidden="true"
         />
         <span :if={!@hide_text} class="truncate">
@@ -68,7 +68,7 @@
         <Iconify.iconify
           :if={!@hide_icon}
           icon={@icon}
-          class={e(@icon_class, "w-4 h-4 shrink-0")}
+          class={e(@icon_class, "size-4 shrink-0")}
           aria-hidden="true"
         />
         <span :if={!@hide_text} class="truncate">
@@ -99,7 +99,7 @@
         <Iconify.iconify
           :if={!@hide_icon}
           icon={@icon}
-          class={e(@icon_class, "w-4 h-4 shrink-0")}
+          class={e(@icon_class, "size-4 shrink-0")}
           aria-hidden="true"
         />
         {#if !@hide_text}
@@ -142,7 +142,7 @@
             <Iconify.iconify
               icon={@icon_already}
               :if={!@hide_icon}
-              class={e(@icon_class, "w-4 h-4 shrink-0")}
+              class={e(@icon_class, "size-4 shrink-0")}
               aria-hidden="true"
             />
             {#if !@hide_text}
