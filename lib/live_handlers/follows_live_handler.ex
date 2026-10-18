@@ -34,7 +34,8 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
         )
       else
         e ->
-          debug(e)
+          # logged as an error, since the flash says nothing of why (eg. `:not_permitted`)
+          error(e, "Could not follow")
           {:error, "Could not follow"}
       end
     end
