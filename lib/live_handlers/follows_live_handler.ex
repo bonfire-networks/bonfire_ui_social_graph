@@ -138,50 +138,59 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
   end
 
   def handle_event("load_more", %{"context" => tab} = params, socket) do
-    user = e(assigns(socket), :user, nil)
+    # a group's page has the group as `category` and no `user`
+    user = e(assigns(socket), :user, nil) || e(assigns(socket), :category, nil)
     current_user = current_user(socket)
 
-    if is_nil(user) do
-      {:noreply, assign_flash(socket, :error, l("User not found"))}
-    else
-      pagination = input_to_atoms(params)
+    cond do
+      is_nil(user) ->
+        {:noreply, assign_flash(socket, :error, l("User not found"))}
 
-      try do
-        # Load just the next page of results
-        new_data =
-          case tab do
-            "followed" ->
-              Bonfire.Social.Graph.Follows.list_followed(
-                user,
-                exclude_object_types: [Bonfire.Tag.Hashtag],
-                pagination: pagination,
-                current_user: current_user
-              )
+      # a group's followers are its roster, which not everyone may see (`Categories.roster_audience/1`): the page does not offer this to them, and an event sent by hand gets nothing either
+      maybe_apply(Bonfire.Classify.Categories, :roster_visible?, [user, current_user],
+        fallback_return: true
+      ) == false and tab == "followers" and e(user, :type, nil) == :group ->
+        {:noreply, assign_flash(socket, :error, l("Could not load more"))}
 
-            "followers" ->
-              Bonfire.Social.Graph.Follows.list_followers(
-                user,
-                pagination: pagination,
-                current_user: current_user
-              )
+      true ->
+        pagination = input_to_atoms(params)
 
-            _ ->
-              %{edges: [], page_info: %{}}
-          end
+        try do
+          # Load just the next page of results
+          new_data =
+            case tab do
+              "followed" ->
+                Bonfire.Social.Graph.Follows.list_followed(
+                  user,
+                  exclude_object_types: [Bonfire.Tag.Hashtag],
+                  pagination: pagination,
+                  current_user: current_user
+                )
 
-        {:noreply,
-         socket
-         |> assign(
-           feed: e(assigns(socket), :feed, []) ++ e(new_data, :edges, []),
-           page_info: e(new_data, :page_info, []),
-           previous_page_info: e(assigns(socket), :page_info, nil),
-           loading: false
-         )}
-      rescue
-        error ->
-          error(error, "Failed to load more #{tab}")
-          {:noreply, assign_flash(socket, :error, l("Could not load more"))}
-      end
+              "followers" ->
+                Bonfire.Social.Graph.Follows.list_followers(
+                  user,
+                  pagination: pagination,
+                  current_user: current_user
+                )
+
+              _ ->
+                %{edges: [], page_info: %{}}
+            end
+
+          {:noreply,
+           socket
+           |> assign(
+             feed: e(assigns(socket), :feed, []) ++ e(new_data, :edges, []),
+             page_info: e(new_data, :page_info, []),
+             previous_page_info: e(assigns(socket), :page_info, nil),
+             loading: false
+           )}
+        rescue
+          error ->
+            error(error, "Failed to load more #{tab}")
+            {:noreply, assign_flash(socket, :error, l("Could not load more"))}
+        end
     end
   end
 
