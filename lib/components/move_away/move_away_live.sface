@@ -66,18 +66,18 @@
                     <div class="badge badge-warning">{l("Migration is not currently available (because federation is turned off)")}</div>
                   {#else}
                     <Bonfire.UI.Common.OpenModalLive
-                      id="migrate_away_modal"
+                      id={"migrate_away_modal_#{id}"}
                       title_text={l("Migrate followers to") <> " " <> (e(character, :username, nil) || e(profile, :name, ""))}
                       form_opts={%{"phx-submit" => "Bonfire.Me.Profiles:move_away"}}
                     >
                       <input name="user" value={id} type="hidden">
 
                       <div class="text-base mt-5 font-medium">{l("Enter password to confirm")}</div>
-                      <label class="label" for="move_away_password_input">
+                      <label class="label" for={"move_away_password_input_#{id}"}>
                         <span class="label-text">{l("For security purposes please enter the password of your account")}</span>
                       </label>
                       <input
-                        id="move_away_password_input"
+                        id={"move_away_password_input_#{id}"}
                         name="password"
                         type="password"
                         placeholder={l("Type here")}
