@@ -68,7 +68,7 @@
                     <Bonfire.UI.Common.OpenModalLive
                       id={"migrate_away_modal_#{id}"}
                       title_text={l("Migrate followers to") <> " " <> (e(character, :username, nil) || e(profile, :name, ""))}
-                      form_opts={%{"phx-submit" => "Bonfire.Me.Profiles:move_away"}}
+                      form_opts={%{"phx-submit" => "Bonfire.Social.Graph.Aliases:move_away"}}
                     >
                       <input name="user" value={id} type="hidden">
 
@@ -113,7 +113,7 @@
               <p class="label-text">{l("If your new profile isn't already listed above, you can add it by adding it here:")}</p>
           {/case}
 
-          <form phx-submit="Bonfire.Me.Profiles:add_alias_to">
+          <form phx-submit="Bonfire.Social.Graph.Aliases:add_alias_to">
             <input
               name="actor"
               type="text"
