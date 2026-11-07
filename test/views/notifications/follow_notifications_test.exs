@@ -47,6 +47,49 @@ defmodule Bonfire.Social.Notifications.FollowsTest do
       )
     end
 
+    test "the follower's card links to the follower, and nothing in the row takes me to my own profile" do
+      some_account = fake_account!()
+      someone = fake_user!(some_account)
+      me = fake_user!(some_account)
+
+      assert {:ok, _follow} = Follows.follow(someone, me)
+
+      # a profile is reached by more than one path (`/@name`, `/character/name`), so what tells whose it is is the username in it
+      follower_name = someone.character.username
+      my_name = me.character.username
+
+      conn(user: me, account: some_account)
+      |> visit("/notifications")
+      |> wait_async()
+      |> unwrap(fn view ->
+        html = Phoenix.LiveViewTest.render(view)
+
+        row =
+          html
+          |> Floki.parse_document!()
+          |> Floki.find("[data-id=feed] article[data-verb=follow]")
+
+        # the positive first: the row is there and its card links to whoever followed
+        assert row != []
+
+        card_links = row |> Floki.find("[data-role=character] a") |> Floki.attribute("href")
+
+        assert Enum.any?(card_links, &String.ends_with?(&1, "/" <> follower_name)),
+               inspect(card_links)
+
+        # whatever in the row navigates (a link, or the row's own click-through) must not land on me
+        targets =
+          Floki.attribute(row, "a", "href") ++
+            Floki.attribute(row, "[phx-click]", "phx-value-permalink") ++
+            Floki.attribute(row, "*", "data-href")
+
+        refute Enum.any?(targets, &String.ends_with?(&1 || "", "/" <> my_name)),
+               "#{inspect(targets)} includes my own profile"
+
+        html
+      end)
+    end
+
     @tag Bonfire.Common.RuntimeConfig.skip_in_ci()
     test "when I accept a follow request, the live-pushed activity shows the follower (not me) as the actor" do
       # Regression for bonfire-app#1907/#1906/#1659: clicking Accept live-pushes the new Follow
