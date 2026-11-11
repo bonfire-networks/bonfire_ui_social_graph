@@ -59,6 +59,26 @@ defmodule Bonfire.UI.Social.Graph.MoveAwayTest do
     |> assert_has("[role=alert]", text: "You need to first add")
   end
 
+  test "add alias form shows an error for a handle that can't be resolved", %{conn: conn, me: me} do
+    # per-process mock: Tesla.Mock looks it up in the `$callers` and `$ancestors` of the LiveView's process
+    # Tesla.Mock.mock_global(fn _ -> %Tesla.Env{status: 404, body: ""} end)
+    Tesla.Mock.mock(fn _ -> %Tesla.Env{status: 404, body: ""} end)
+
+    # the input has a placeholder but no label, so PhoenixTest's fill_in can't target it
+    conn
+    |> visit("/settings/user/profile")
+    |> wait_async()
+    |> unwrap(fn view ->
+      view
+      |> form("form[phx-submit$=':add_alias']", %{"actor" => "@nobody@unresolvable.local"})
+      |> render_submit()
+    end)
+    |> wait_async()
+    |> assert_has("[role=alert]", text: "Couldn't find a remote profile with that name")
+
+    assert [] = Aliases.list_my_aliases(me) |> e(:edges, [])
+  end
+
   test "add alias form adds the alias", %{conn: conn, me: me} do
     alias_a = fake_user!()
     assert [] = Aliases.list_my_aliases(me) |> e(:edges, [])

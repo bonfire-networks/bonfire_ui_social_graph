@@ -24,6 +24,23 @@ defmodule Bonfire.Social.Notifications.FollowsTest do
       |> assert_has("[data-id=feed] article", text: "followed")
     end
 
+    test "when my request to follow is accepted, my notifications say I am now following them" do
+      some_account = fake_account!()
+      me = fake_user!(some_account)
+      someone = fake_user!(some_account, %{}, request_before_follow: true)
+
+      assert {:ok, request} = Follows.follow(me, someone)
+      assert true == Follows.requested?(me, someone)
+      assert {:ok, _follow} = Follows.accept(request, current_user: someone)
+      assert true == Follows.following?(me, someone)
+
+      conn(user: me, account: some_account)
+      |> visit("/notifications")
+      |> wait_async()
+      |> assert_has("[data-id=feed] article", text: "You are now following")
+      |> assert_has("[data-id=feed] article", text: someone.profile.name)
+    end
+
     test "a follow shows who is following me, with their bio, not my own card" do
       some_account = fake_account!()
       someone = fake_user!(some_account)
@@ -138,6 +155,23 @@ defmodule Bonfire.Social.Notifications.FollowsTest do
       conn(user: me, account: some_account)
       |> visit("/notifications")
       |> wait_async()
+      |> unwrap(fn view ->
+        # the row of a request leads to where it can be accepted or declined, not to the profile of whoever it is about
+        targets =
+          view
+          |> Phoenix.LiveViewTest.render()
+          |> Floki.parse_document!()
+          |> Floki.find("[data-id=feed] article")
+          |> Floki.attribute("*", "data-href")
+          |> Enum.reject(&(&1 in [nil, ""]))
+
+        assert targets != [], "control: the row has a click target"
+
+        assert Enum.all?(targets, &String.ends_with?(&1, "/notifications/requests")),
+               "#{inspect(targets)} is not the requests page (requester @#{someone.character.username}, me @#{me.character.username})"
+
+        Phoenix.LiveViewTest.render(view)
+      end)
       |> click_button("Accept")
       |> wait_async()
       |> refute_has("[data-id=flash_error]")

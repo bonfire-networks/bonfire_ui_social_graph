@@ -29,6 +29,9 @@ defmodule Bonfire.Social.Graph.Aliases.LiveHandler do
         # TODO: assign the changed aliases instead of reloading the page
         |> redirect_to(current_url(socket), reload: true)
       }
+    else
+      {:error, e} ->
+        {:noreply, assign_error(socket, e)}
     end
   end
 
