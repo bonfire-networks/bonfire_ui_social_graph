@@ -44,6 +44,9 @@ defmodule Bonfire.UI.Social.Graph.FollowButtonLive do
 
   slot if_followed
 
+  @doc "Shown beside the button while not following (for a caller whose extra control depends on following, such as the topics modal's locked bell)."
+  slot if_not_followed
+
   @doc "Where a guest's Follow goes: the remote-follow deeplink when another server can reach the object, otherwise signing in here, the only way to follow something that does not federate."
   def guest_follow_path(path, object_id) do
     if maybe_apply(

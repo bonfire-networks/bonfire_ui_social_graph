@@ -42,6 +42,8 @@
               do: l("Follow back"),
               else: lc("verb: action", "Follow", [], :bonfire_social_graph)} {@label}</span>
       </button>
+
+      <#slot {@if_not_followed} />
     {#else}
       <a
         data-cid={@id}

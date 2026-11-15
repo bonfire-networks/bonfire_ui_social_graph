@@ -26,6 +26,9 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
 
       with {:ok, current_user} <- current_user_or_remote_interaction(socket, "follow", object),
            {:ok, _follow} <- Bonfire.Social.Graph.Follows.follow(current_user, object) do
+        # the group's own follow has taken effect, the modal is an optional extra
+        maybe_offer_group_topics(socket, current_user, object, :follow)
+
         ComponentID.send_assigns(
           e(params, "component", Bonfire.UI.Social.Graph.FollowButtonLive),
           id,
@@ -42,7 +45,12 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
   end
 
   def handle_event("unfollow", %{"id" => id} = params, socket) do
-    with _ <- Bonfire.Social.Graph.Follows.unfollow(current_user_required!(socket), id) do
+    user = current_user_required!(socket)
+    object = assigned_object_or_id(socket, id)
+
+    with _ <- Bonfire.Social.Graph.Follows.unfollow(user, id) do
+      maybe_offer_group_topics(socket, user, object, :unfollow)
+
       set = [
         my_follow: false
       ]
@@ -456,6 +464,18 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
       fallback_return: []
     )
     |> debug("requests")
+  end
+
+  # a group's topics are offered after its own follow or unfollow (`Bonfire.Classify.Web.GroupTopicsPickerLive`), when the button knows its object is a group
+  defp maybe_offer_group_topics(socket, user, object, mode) do
+    if e(object, :type, nil) == :group do
+      maybe_apply(
+        Bonfire.Classify.Web.GroupTopicsPickerLive,
+        :open,
+        [user, object, mode, Bonfire.UI.Common.ReusableModalLive.modal_id(assigns(socket))],
+        fallback_return: nil
+      )
+    end
   end
 
   defp current_request_status(request_id, current_user) do
