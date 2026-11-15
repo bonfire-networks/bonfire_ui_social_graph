@@ -1,5 +1,8 @@
 defmodule Bonfire.Social.Graph.Follows.LiveHandler do
   use Bonfire.UI.Common.Web, :live_handler
+
+  # a guest is sent to the remote interaction flow by the handler itself (follow), and pages through the lists
+  @guest_allowed_events ~w(follow load_more preload_more)
   import Untangle
   # alias Bonfire.Boundaries.Circles
 
@@ -416,12 +419,13 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
   end
 
   def load_network("requested" = tab, _user, params, socket) do
-    requested = list_requested(current_user(socket), input_to_atoms(params))
+    current_user = current_user(socket)
+    requested = list_requested(current_user, input_to_atoms(params))
 
     [
       loading: false,
       selected_tab: tab,
-      back: "/@#{e(current_user(socket), :character, :username, nil)}",
+      back: "/@#{e(current_user, :character, :username, nil)}",
       feed: requested
       # TODO: pagination
       # page_info: e(requested, :page_info, [])
@@ -429,11 +433,12 @@ defmodule Bonfire.Social.Graph.Follows.LiveHandler do
   end
 
   def load_network("requests" = tab, _user, params, socket) do
-    requests = list_requests(current_user(socket), input_to_atoms(params))
+    current_user = current_user(socket)
+    requests = list_requests(current_user, input_to_atoms(params))
 
     [
       loading: false,
-      back: "/@#{e(current_user(socket), :character, :username, nil)}",
+      back: "/@#{e(current_user, :character, :username, nil)}",
       selected_tab: tab,
       feed: requests
       # page_info: e(requested, :page_info, [])
