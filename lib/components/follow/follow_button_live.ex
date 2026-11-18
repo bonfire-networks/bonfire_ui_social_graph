@@ -64,4 +64,6 @@ defmodule Bonfire.UI.Social.Graph.FollowButtonLive do
       Bonfire.Social.Graph.Follows.LiveHandler.update_many(assigns_sockets,
         caller_module: __MODULE__
       )
+      # a pending request listens for its answer, which then reaches this button through `ComponentID`
+      |> Bonfire.UI.Common.listen_for_request_answers(:my_follow)
 end

@@ -76,4 +76,61 @@ defmodule Bonfire.UI.Social.Graph.FollowRejectedButtonTest do
     |> assert_has("button", text: "Follow", exact: true)
     |> refute_has("button", text: "Requested")
   end
+
+  # the answer the requester is waiting for, to the Follow they sent
+  defp answer!(type, follow_activity) do
+    assert {:ok, _} =
+             Transformer.handle_incoming(%{
+               "@context" => "https://www.w3.org/ns/activitystreams",
+               "type" => type,
+               "id" => "#{@remote}/#{String.downcase(type)}/#{System.unique_integer([:positive])}",
+               "actor" => @remote,
+               "object" => follow_activity.data["id"],
+               "to" => [follow_activity.data["actor"]]
+             })
+  end
+
+  # the profile, left open: what follows is read from this same page, with no second visit
+  defp open_profile_requested(conn, remote) do
+    conn
+    |> visit(Bonfire.Common.URIs.path(remote))
+    |> wait_async()
+    |> assert_has("button", text: "Requested")
+  end
+
+  test "the open profile turns from Requested to Following when they accept, with no reload", %{
+    conn: conn,
+    remote: remote,
+    me: me
+  } do
+    {:ok, follow} = Follows.follow(me, remote)
+    assert {:ok, follow_activity} = Bonfire.Federate.ActivityPub.Outgoing.push_now!(follow)
+    session = open_profile_requested(conn, remote)
+
+    answer!("Accept", follow_activity)
+    assert Follows.following?(me, remote), "control: the Accept made them a follower"
+
+    session
+    |> wait_async()
+    |> assert_has("button", text: "Following")
+    |> refute_has("button", text: "Requested")
+  end
+
+  test "the open profile turns from Requested back to Follow when they reject, with no reload", %{
+    conn: conn,
+    remote: remote,
+    me: me
+  } do
+    {:ok, follow} = Follows.follow(me, remote)
+    assert {:ok, follow_activity} = Bonfire.Federate.ActivityPub.Outgoing.push_now!(follow)
+    session = open_profile_requested(conn, remote)
+
+    answer!("Reject", follow_activity)
+    refute Follows.requested?(me, remote), "control: the Reject ended the request"
+
+    session
+    |> wait_async()
+    |> assert_has("button", text: "Follow", exact: true)
+    |> refute_has("button", text: "Requested")
+  end
 end
