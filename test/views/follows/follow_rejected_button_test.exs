@@ -83,7 +83,8 @@ defmodule Bonfire.UI.Social.Graph.FollowRejectedButtonTest do
              Transformer.handle_incoming(%{
                "@context" => "https://www.w3.org/ns/activitystreams",
                "type" => type,
-               "id" => "#{@remote}/#{String.downcase(type)}/#{System.unique_integer([:positive])}",
+               "id" =>
+                 "#{@remote}/#{String.downcase(type)}/#{System.unique_integer([:positive])}",
                "actor" => @remote,
                "object" => follow_activity.data["id"],
                "to" => [follow_activity.data["actor"]]
