@@ -2,7 +2,7 @@ defmodule Bonfire.UI.Social.Graph.ExportImportFollowsTest do
   use Bonfire.UI.Social.Graph.ConnCase, async: System.get_env("TEST_UI_ASYNC") != "no"
 
   alias Bonfire.Social.Graph.Follows
-  alias Bonfire.Social.Import
+  alias Bonfire.Common.Import
 
   setup do
     account = fake_account!()
