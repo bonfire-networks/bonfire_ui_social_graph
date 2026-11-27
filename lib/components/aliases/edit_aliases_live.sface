@@ -21,7 +21,6 @@
               show_controls={[:follows_me]}
               character={character}
               profile={profile}
-              class="btn btn-circle btn-ghost btn-sm"
               avatar_class="size-11 bg-base-300"
             />
             <button
